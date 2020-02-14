@@ -165,7 +165,7 @@ def arma(size: int = 100,
     # inherit from arima_with_seasonality
     """Simulate a realization from an ARMA characteristic.
 
-Parameters
+    Parameters
     ----------
     size: scalar int
         Number of samples to generate.
