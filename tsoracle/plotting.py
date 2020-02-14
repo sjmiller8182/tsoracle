@@ -4,7 +4,7 @@ from typing import Callable, Tuple, List, Union
 # anaconda api
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.signal import periodogram, parzen
+from scipy.signal.windows import periodogram, parzen
 from statsmodels.tsa.stattools import acf
 
 # custom types

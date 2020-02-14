@@ -1,4 +1,4 @@
 
 # API
-import forepy.plotting as plotts
-import forepy.generate as gen
+import tsoracle.plotting as plot
+import tsoracle.generate as gen
