@@ -99,3 +99,86 @@ def sinusoidal(mag: Union[float, ndarray, Series, List],
     sig_noise = noise(var = var, size = size)
 
     return signal + sig_noise
+
+def arima_with_seasonality(size: int = 100,
+                           phi: Union[float, ndarray] = 0,
+                           theta: Union[float, ndarray] = 0,
+                           d: int = 0,
+                           s: int = 0,
+                           var: float = 0.01) -> ndarray:
+    """Simulate a realization from an ARIMA with seasonality characteristic.
+
+    Parameters
+    ----------
+    size: scalar int
+        Number of samples to generate.
+    phi: scalar float or list-like
+        AR process order
+    theta: scalar float or list-like
+        MA process order
+    d: scalar int
+        ARIMA process difference order
+    s: scalar int
+        Seasonality process order
+    var: scalar float, optional
+    	Nosie variance level.
+
+    Returns
+    -------
+    signal: np.ndarray
+        Simulated ARIMA with seasonality.
+    """
+    raise NotImplementedError
+
+def arima(size: int = 100,
+          phi: Union[float, ndarray] = 0,
+          theta: Union[float, ndarray] = 0,
+          d: int = 0,
+          var: float = 0.01) -> ndarray:
+    # inherit from arima_with_seasonality
+    """Simulate a realization from an ARIMA characteristic.
+
+    Parameters
+    ----------
+    size: scalar int
+        Number of samples to generate.
+    phi: scalar float or list-like
+        AR process order
+    theta: scalar float or list-like
+        MA process order
+    d: scalar int
+        ARIMA process difference order
+    var: scalar float, optional
+    	Nosie variance level.
+
+    Returns
+    -------
+    signal: np.ndarray
+        Simulated ARIMA.
+    """
+    raise NotImplementedError
+
+def arma(size: int = 100,
+         phi: Union[float, ndarray] = 0,
+         theta: Union[float, ndarray] = 0,
+         var: float = 0.01) -> ndarray:
+    # inherit from arima_with_seasonality
+    """Simulate a realization from an ARMA characteristic.
+
+Parameters
+    ----------
+    size: scalar int
+        Number of samples to generate.
+    phi: scalar float or list-like
+        AR process order
+    theta: scalar float or list-like
+        MA process order
+    var: scalar float, optional
+    	Nosie variance level.
+
+    Returns
+    -------
+    signal: np.ndarray
+        Simulated ARMA.
+    """
+    raise NotImplementedError
