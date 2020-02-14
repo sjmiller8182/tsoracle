@@ -4,12 +4,47 @@ from typing import Callable, Tuple, List, Union
 # anaconda api
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.signal.windows import periodogram, parzen
+from scipy.signal import periodogram
+from scipy.signal.windows import parzen
 from statsmodels.tsa.stattools import acf
 
 # custom types
 from numpy import ndarray
 from pandas import Series
+
+def realization(x: Union[ndarray, Series, List],
+                figsize: Tuple[float, float] = None) -> None:
+    """Plot a given realization
+
+    Acts like `tswge::plotts.wge()`.
+
+    Parameters
+    ----------
+    x: list-like
+    	A time series realization.
+    figsize: Tuple[float, float], optional
+        Size of the plotting grid.
+        If `None` is provided, `(10, 10)` will be used.
+
+    """
+
+    # attempt coercion to ndarray
+    if not isinstance(x, np.ndarray):
+        x = np.array(x)
+
+    fig, ax = plt.subplots(figsize = figsize)
+    
+    # set figsize to default if none is given
+    if figsize is None:
+        figsize = (10, 10)
+
+    fig.suptitle('Sample Plots')
+    
+    # plot the realization
+    ax.plot(x, color = 'black')
+    ax.set_xlabel('Time')
+    ax.set_title('Realization')
+
 
 def sample(x: Union[ndarray, Series, List],
            figsize: Tuple[float, float] = None,
