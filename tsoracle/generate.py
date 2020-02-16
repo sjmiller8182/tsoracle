@@ -13,7 +13,7 @@ from tsoracle.API import Generator
 
 # functional API
 
-def noise(var: float, size: int) -> ndarray:
+def noise(var: float, size: int, seed: float = None) -> ndarray:
     """ Generate sequential noise from a random normal .
 
     Parameters
@@ -22,6 +22,8 @@ def noise(var: float, size: int) -> ndarray:
     	Nosie variance level.
     size: scalar int
         Number of samples to generate.
+    seed: scalar int, optional
+        Seed the random number generator
     
     Returns
     -------
@@ -29,13 +31,18 @@ def noise(var: float, size: int) -> ndarray:
         Sequential noise.
 
     """
+    
+    if seed is not None:
+        np.random.seed(42)
+
     return np.random.normal(scale = np.sqrt(var),
                             size = size)
 
 def linear(intercept: float,
            slope: float, 
            size: int, 
-           var: float = 0.01):
+           var: float = 0.01, 
+           seed: float = None):
     """ Generate linear signal plus noise.
 
     Parameters
@@ -48,6 +55,8 @@ def linear(intercept: float,
         Number of samples to generate.
     var: scalar float, optional
     	Nosie variance level.
+    seed: scalar int, optional
+        Seed the random number generator
 
     Returns
     -------
@@ -55,6 +64,10 @@ def linear(intercept: float,
         Sequential linear signal.
 
     """
+
+    if seed is not None:
+        np.random.seed(42)
+
     # generate time samples
     time_index = np.arange(size)
     # get noise
@@ -68,7 +81,8 @@ def sinusoidal(mag: Union[float, ndarray, Series, List],
               freq: Union[float, ndarray, Series, List],
               shift: Union[float, ndarray, Series, List], 
               size: int, 
-              var: float = 0.01):
+              var: float = 0.01, 
+              seed: float = None):
     """ Generate sinusoidal signal plus noise.
 
     Parameters
@@ -83,6 +97,8 @@ def sinusoidal(mag: Union[float, ndarray, Series, List],
         Number of samples to generate.
     var: scalar float, optional
     	Nosie variance level.
+    seed: scalar int, optional
+        Seed the random number generator.
 
     Returns
     -------
@@ -90,6 +106,10 @@ def sinusoidal(mag: Union[float, ndarray, Series, List],
         Sequential sinusoidal signal.
 
     """
+
+    if seed is not None:
+        np.random.seed(42)
+
     mag = np.array(mag).reshape(np.array(mag).size, 1)
     freq = np.array(freq).reshape(np.array(freq).size, 1)
     shift = np.array(shift).reshape(np.array(shift).size, 1)
@@ -110,7 +130,8 @@ def arima_with_seasonality(size: int = 100,
                            theta: Union[float, ndarray] = 0,
                            d: int = 0,
                            s: int = 0,
-                           var: float = 0.01) -> ndarray:
+                           var: float = 0.01, 
+                           seed: float = None) -> ndarray:
     """Simulate a realization from an ARIMA with seasonality characteristic.
 
     Parameters
@@ -127,19 +148,26 @@ def arima_with_seasonality(size: int = 100,
         Seasonality process order
     var: scalar float, optional
     	Nosie variance level.
+    seed: scalar int, optional
+        Seed the random number generator.
 
     Returns
     -------
     signal: np.ndarray
         Simulated ARIMA with seasonality.
     """
+
+    if seed is not None:
+        np.random.seed(42)
+
     raise NotImplementedError
 
 def arima(size: int = 100,
           phi: Union[float, ndarray] = 0,
           theta: Union[float, ndarray] = 0,
           d: int = 0,
-          var: float = 0.01) -> ndarray:
+          var: float = 0.01, 
+          seed: float = None) -> ndarray:
     # inherit from arima_with_seasonality
     """Simulate a realization from an ARIMA characteristic.
 
@@ -155,18 +183,25 @@ def arima(size: int = 100,
         ARIMA process difference order
     var: scalar float, optional
     	Nosie variance level.
+    seed: scalar int, optional
+        Seed the random number generator.
 
     Returns
     -------
     signal: np.ndarray
         Simulated ARIMA.
     """
+
+    if seed is not None:
+        np.random.seed(42)
+
     raise NotImplementedError
 
 def arma(size: int = 100,
          phi: Union[float, ndarray] = 0,
          theta: Union[float, ndarray] = 0,
-         var: float = 0.01) -> ndarray:
+         var: float = 0.01, 
+         seed: float = None) -> ndarray:
     # inherit from arima_with_seasonality
     """Simulate a realization from an ARMA characteristic.
 
@@ -180,12 +215,18 @@ def arma(size: int = 100,
         MA process order
     var: scalar float, optional
     	Nosie variance level.
+    seed: scalar int, optional
+        Seed the random number generator.
 
     Returns
     -------
     signal: np.ndarray
         Simulated ARMA.
     """
+
+    if seed is not None:
+        np.random.seed(42)
+
     raise NotImplementedError
 
 # Object-O API
@@ -218,7 +259,8 @@ class NoiseSignal(Generator):
         """
         self.var = var
 
-    def gen(self, size: int) -> ndarray:
+    def gen(self, size: int, 
+            seed: float = None) -> ndarray:
         """Generate a realization of given size.
 
         Parameters
@@ -226,6 +268,8 @@ class NoiseSignal(Generator):
         size: scalar int
             Number of samples to generate.
             Must be strictly positive.
+        seed: scalar int, optional
+            Seed the random number generator.
 
         Returns
         -------
@@ -233,7 +277,7 @@ class NoiseSignal(Generator):
             Simulated noise.
         """
 
-        return noise(self.var, size)
+        return noise(self.var, size, seed)
 
 class ARIMASignal(Generator):
     """Generator for ARUMA (ARIMA with seasonality) class signals.
@@ -286,7 +330,8 @@ class ARIMASignal(Generator):
         self.s = s
         self.var = var
 
-    def gen(self, size: int) -> ndarray:
+    def gen(self, size: int, 
+            seed: float = None) -> ndarray:
         """Generate a realization of given size.
 
         Parameters
@@ -294,6 +339,8 @@ class ARIMASignal(Generator):
         size: scalar int
             Number of samples to generate.
             Must be strictly positive.
+        seed: scalar int, optional
+            Seed the random number generator.
 
         Returns
         -------
@@ -306,7 +353,8 @@ class ARIMASignal(Generator):
                                       self.theta, 
                                       self.d, 
                                       self.s, 
-                                      self.var)
+                                      self.var,
+                                      seed)
 
 class LinearSignal(Generator):
     """Generator for linearly deterministic signals.
@@ -347,7 +395,8 @@ class LinearSignal(Generator):
         self.slope = slope
         self.var = var
 
-    def gen(self, size: int) -> ndarray:
+    def gen(self, size: int, 
+            seed: float = None) -> ndarray:
         """Generate a realization of given size.
 
         Parameters
@@ -355,6 +404,8 @@ class LinearSignal(Generator):
         size: scalar int
             Number of samples to generate.
             Must be strictly positive.
+        seed: scalar int, optional
+            Seed the random number generator.
 
         Returns
         -------
@@ -365,7 +416,8 @@ class LinearSignal(Generator):
         return linear(self.intercept,
                       self.slope,
                       size,
-                      self.var)
+                      self.var,
+                      seed)
 
 class SinusoidalSignal(Generator):
     """Generator for sinusoidal deterministic signals.
@@ -410,7 +462,8 @@ class SinusoidalSignal(Generator):
         self.shift = shift
         self.var = var
 
-    def gen(self, size: int) -> ndarray:
+    def gen(self, size: int, 
+            seed: float = None) -> ndarray:
         """Generate a realization of given size.
 
         Parameters
@@ -418,6 +471,8 @@ class SinusoidalSignal(Generator):
         size: scalar int
             Number of samples to generate.
             Must be strictly positive.
+        seed: scalar int, optional
+            Seed the random number generator.
 
         Returns
         -------
@@ -429,4 +484,5 @@ class SinusoidalSignal(Generator):
                           self.freq,
                           self.shift, 
                           size,
-                          self.var)
+                          self.var,
+                          seed)
