@@ -69,8 +69,8 @@ def sample(x: Union[ndarray, Series, List],
         If `None` is provided, `(10, 10)` will be used.
     window: Callable, optional
         A callable windowing function.
-        Must work like window functions from `scipy.signal`.
-        If `None` is provided, `scipy.signal.parzen()` will be used.
+        Must work like window functions from `scipy.signal.windows`.
+        If `None` is provided, `scipy.signal.windows.parzen()` will be used.
 
     """
     
