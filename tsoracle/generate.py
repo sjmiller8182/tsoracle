@@ -11,6 +11,8 @@ from pandas import Series
 # API
 from tsoracle.API import Generator
 
+# functional API
+
 def noise(var: float, size: int) -> ndarray:
     """ Generate sequential noise from a random normal .
 
@@ -188,6 +190,51 @@ def arma(size: int = 100,
 
 # Object-O API
 
+class NoiseSignal(Generator):
+    """Generator for noise.
+    
+    Attributes
+    ----------
+    var: scalar float, optional
+        Nosie variance level.
+
+    Methods
+    -------
+    gen(size)
+        Generates a signal
+    """
+
+    def __init__(self, 
+                 phi: Union[float, ndarray] = 0,
+                 theta: Union[float, ndarray] = 0,
+                 d: int = 0,
+                 s: int = 0,
+                 var: float = 0.01) -> None:
+        """
+        Parameters
+        ----------
+        var: scalar float, optional
+            Nosie variance level.
+        """
+        self.var = var
+
+    def gen(self, size: int) -> ndarray:
+        """Generate a realization of given size.
+
+        Parameters
+        ----------
+        size: scalar int
+            Number of samples to generate.
+            Must be strictly positive.
+
+        Returns
+        -------
+        signal: np.ndarray
+            Simulated noise.
+        """
+
+        return noise(self.var, size)
+
 class ARIMASignal(Generator):
     """Generator for ARUMA (ARIMA with seasonality) class signals.
     
@@ -251,7 +298,7 @@ class ARIMASignal(Generator):
         Returns
         -------
         signal: np.ndarray
-            Simulated ARMA.
+            Simulated ARIMA.
         """
 
         return arima_with_seasonality(size, 
