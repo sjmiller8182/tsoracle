@@ -231,7 +231,7 @@ def arma(size: int = 100,
 
 # Object-O API
 
-class NoiseSignal(Generator):
+class Noise(Generator):
     """Generator for noise.
     
     Attributes
@@ -279,7 +279,7 @@ class NoiseSignal(Generator):
 
         return noise(self.var, size, seed)
 
-class ARIMASignal(Generator):
+class ARIMA(Generator):
     """Generator for ARUMA (ARIMA with seasonality) class signals.
     
     Attributes
@@ -356,7 +356,7 @@ class ARIMASignal(Generator):
                                       self.var,
                                       seed)
 
-class LinearSignal(Generator):
+class Linear(Generator):
     """Generator for linearly deterministic signals.
     
     Attributes
@@ -419,7 +419,7 @@ class LinearSignal(Generator):
                       self.var,
                       seed)
 
-class SinusoidalSignal(Generator):
+class Sinusoidal(Generator):
     """Generator for sinusoidal deterministic signals.
     
     Attributes
