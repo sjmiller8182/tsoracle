@@ -8,6 +8,9 @@ import numpy as np
 from numpy import ndarray
 from pandas import Series
 
+# API
+from tsoracle.API import Generator
+
 def noise(var: float, size: int) -> ndarray:
     """ Generate sequential noise from a random normal .
 
@@ -182,3 +185,201 @@ def arma(size: int = 100,
         Simulated ARMA.
     """
     raise NotImplementedError
+
+# Object-O API
+
+class ARIMASignal(Generator):
+    """Generator for ARUMA (ARIMA with seasonality) class signals.
+    
+    Attributes
+    ----------
+    phi: scalar float or list-like
+        AR process order
+    theta: scalar float or list-like
+        MA process order
+    d: scalar int
+        ARIMA process difference order
+    s: scalar int
+        Seasonality process order
+    var: scalar float, optional
+        Nosie variance level.
+
+    Methods
+    -------
+    gen(size)
+        Generates a signal
+    """
+
+    def __init__(self, 
+                 phi: Union[float, ndarray] = 0,
+                 theta: Union[float, ndarray] = 0,
+                 d: int = 0,
+                 s: int = 0,
+                 var: float = 0.01) -> None:
+        """
+
+        Parameters
+        ----------
+        phi: scalar float or list-like
+            AR process order
+        theta: scalar float or list-like
+            MA process order
+        d: scalar int
+            ARIMA process difference order
+        s: scalar int
+            Seasonality process order
+        var: scalar float, optional
+            Nosie variance level.
+
+        """
+
+        self.phi = phi
+        self.theta = theta
+        self.d = d
+        self.s = s
+        self.var = var
+
+    def gen(self, size: int) -> ndarray:
+        """Generate a realization of given size.
+
+        Parameters
+        ----------
+        size: scalar int
+            Number of samples to generate.
+            Must be strictly positive.
+
+        Returns
+        -------
+        signal: np.ndarray
+            Simulated ARMA.
+        """
+
+        return arima_with_seasonality(size, 
+                                      self.phi, 
+                                      self.theta, 
+                                      self.d, 
+                                      self.s, 
+                                      self.var)
+
+class LinearSignal(Generator):
+    """Generator for linearly deterministic signals.
+    
+    Attributes
+    ----------
+    b0: scalar float or list-like
+        AR process order
+    b1: scalar float or list-like
+        MA process order
+    var: scalar float, optional
+        Nosie variance level.
+
+    Methods
+    -------
+    gen(size)
+        Generates a signal
+    """
+
+    def __init__(self, 
+                 intercept: float,
+                 slope: float,  
+                 var: float = 0.01) -> None:
+        """
+
+        Parameters
+        ----------
+        intercept: scalar float
+            Intercept of linear signal.
+        slope: scalar float
+            Slope of linear signal.
+        var: scalar float, optional
+            Nosie variance level.
+
+        """
+
+        self.intercept = intercept
+        self.slope = slope
+        self.var = var
+
+    def gen(self, size: int) -> ndarray:
+        """Generate a realization of given size.
+
+        Parameters
+        ----------
+        size: scalar int
+            Number of samples to generate.
+            Must be strictly positive.
+
+        Returns
+        -------
+        signal: np.ndarray
+            Simulated linear.
+        """
+
+        return linear(self.intercept,
+                      self.slope,
+                      size,
+                      self.var)
+
+class SinusoidalSignal(Generator):
+    """Generator for sinusoidal deterministic signals.
+    
+    Attributes
+    ----------
+    mag: scalar or list-like
+    	Signal magnitudes(ies).
+    freq: scalar or list-like
+        Signal frequency(ies).
+    shift: scalar or list-like
+        Phase shift(s).
+    var: scalar float, optional
+    	Nosie variance level.
+
+    Methods
+    -------
+    gen(size)
+        Generates a signal
+    """
+
+    def __init__(self, 
+                 mag: Union[float, ndarray, Series, List],
+                 freq: Union[float, ndarray, Series, List],
+                 shift: Union[float, ndarray, Series, List],
+                 var: float = 0.01) -> None:
+        """
+        Parameters
+        ----------
+        mag: scalar or list-like
+            Signal magnitudes(ies).
+        freq: scalar or list-like
+            Signal frequency(ies).
+        shift: scalar or list-like
+            Phase shift(s).
+        var: scalar float, optional
+            Nosie variance level.
+        """
+
+        self.mag = mag
+        self.freq = freq
+        self.shift = shift
+        self.var = var
+
+    def gen(self, size: int) -> ndarray:
+        """Generate a realization of given size.
+
+        Parameters
+        ----------
+        size: scalar int
+            Number of samples to generate.
+            Must be strictly positive.
+
+        Returns
+        -------
+        signal: np.ndarray
+            Simulated linear.
+        """
+
+        return sinusoidal(self.mag,
+                          self.freq,
+                          self.shift, 
+                          size,
+                          self.var)
