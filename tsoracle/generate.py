@@ -13,7 +13,7 @@ from tsoracle.API import Generator
 
 # functional API
 
-def noise(var: float, size: int, seed: float = None) -> ndarray:
+def noise(var: Union[float, int], size: int, seed: float = None) -> ndarray:
     """ Generate sequential noise from a random normal .
 
     Parameters
@@ -21,7 +21,7 @@ def noise(var: float, size: int, seed: float = None) -> ndarray:
     var: scalar float
     	Nosie variance level.
     size: scalar int
-        Number of samples to generate.
+        Number of samples to generate, strictly positive.
     seed: scalar int, optional
         Seed the random number generator
     
@@ -35,8 +35,16 @@ def noise(var: float, size: int, seed: float = None) -> ndarray:
     if seed is not None:
         np.random.seed(seed)
 
-    return np.random.normal(scale = np.sqrt(var),
-                            size = size)
+    if size < 1:
+        raise ValueError('The value for size must be strictly positive')
+    
+    if var == 0:
+        noise_signal = np.zeros(size)
+    else:
+        noise_signal = np.random.normal(scale = np.sqrt(var),
+                                        size = size)
+
+    return noise_signal
 
 def linear(intercept: float,
            slope: float, 
@@ -262,10 +270,6 @@ class Noise(Generator):
     """
 
     def __init__(self, 
-                 phi: Union[float, ndarray] = 0,
-                 theta: Union[float, ndarray] = 0,
-                 d: int = 0,
-                 s: int = 0,
                  var: float = 0.01) -> None:
         """
         Parameters
