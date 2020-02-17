@@ -33,7 +33,7 @@ def noise(var: float, size: int, seed: float = None) -> ndarray:
     """
     
     if seed is not None:
-        np.random.seed(42)
+        np.random.seed(seed)
 
     return np.random.normal(scale = np.sqrt(var),
                             size = size)
@@ -66,7 +66,11 @@ def linear(intercept: float,
     """
 
     if seed is not None:
-        np.random.seed(42)
+        np.random.seed(seed)
+
+    # check for input errors
+    if size < 1:
+        raise ValueError('The value for size must be strictly positive')
 
     # generate time samples
     time_index = np.arange(size)
@@ -108,11 +112,15 @@ def sinusoidal(mag: Union[float, ndarray, Series, List],
     """
 
     if seed is not None:
-        np.random.seed(42)
+        np.random.seed(seed)
 
     mag = np.array(mag).reshape(np.array(mag).size, 1)
     freq = np.array(freq).reshape(np.array(freq).size, 1)
     shift = np.array(shift).reshape(np.array(shift).size, 1)
+
+    # check for input errors
+    if size < 1:
+        raise ValueError('The value for size must be strictly positive')
 
     # generate time samples
     time_index = np.empty((mag.size, size))
@@ -158,7 +166,11 @@ def arima_with_seasonality(size: int = 100,
     """
 
     if seed is not None:
-        np.random.seed(42)
+        np.random.seed(seed)
+
+    # check for input errors
+    if size < 1:
+        raise ValueError('The value for size must be strictly positive')
 
     raise NotImplementedError
 
@@ -225,7 +237,11 @@ def arma(size: int = 100,
     """
 
     if seed is not None:
-        np.random.seed(42)
+        np.random.seed(seed)
+
+    # check for input errors
+    if size < 1:
+        raise ValueError('The value for size must be strictly positive')
 
     raise NotImplementedError
 
