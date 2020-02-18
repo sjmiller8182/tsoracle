@@ -319,6 +319,8 @@ class ARIMA(Generator):
     -------
     gen(size)
         Generates a signal
+    factor_table(table_type)
+        Get a factor table for the generator
     """
 
     def __init__(self, 
