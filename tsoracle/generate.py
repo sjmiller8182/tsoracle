@@ -13,7 +13,9 @@ from tsoracle.API import Generator
 
 # functional API
 
-def noise(var: Union[float, int], size: int, seed: float = None) -> ndarray:
+def noise(var: Union[float, int], 
+          size: int, 
+          seed: float = None) -> ndarray:
     """ Generate sequential noise from a random normal .
 
     Parameters
