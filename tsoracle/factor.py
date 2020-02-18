@@ -1,4 +1,6 @@
 
+from typing import List, Union
+
 # numpy
 import numpy as np
 # polynomials
@@ -9,11 +11,22 @@ from numpy import poly1d, ndarray
 def table(polynomial: ndarray):
     """Create a factor table from a polynomial
 
+    An example AR polynomial is
+        
+    (1 + 0.8 B)(1 - 1.2 B + 0.4 B^2) X_t = 0
+
+    This would be entered as 
+    
+    table( [ [-0.8] , [1.2, -0.4] ] )
+
     Acts like `tswge::factor.wge`
     """
+
+    roots = polyroots(polynomial)
+
     raise NotImplementedError
 
-def multiply(factors) -> ndarray:
+def multiply(factors: List[List[float]]) -> ndarray:
     """Multiply together time series factors
     
     Parameters
@@ -56,7 +69,7 @@ def multiply(factors) -> ndarray:
         accum_poly = np.negative(accum_poly[::-1])[1:]
         return accum_poly
 
-def poly_to_string(poly: ndarray):
+def poly_to_string(poly: ndarray) -> str:
     """Convert a polynomial to a string representation of the full ploynomial
 
         An example AR polynomial is
@@ -92,7 +105,8 @@ def poly_to_string(poly: ndarray):
             char += ('*x^' + str(i))
     return char
 
-def roots_in_unit_circle(phi = 0, theta = 0):
+def roots_in_unit_circle(phi:Union[List, ndarray] = 0,
+                         theta:Union[List, ndarray] = 0) -> bool:
     """Check if any roots from an AR or MA polynomial are inside the unit circle
     """
     raise NotImplementedError
@@ -108,18 +122,18 @@ class TSPolynomial:
         Signal frequency(ies).
     """
 
-    def __init__(self, model_coef):
+    def __init__(self, model_coef: Union[float, List]):
         self.model_coef = model_coef
         self.poly = None
     
     @property
-    def coef(self):
+    def coef(self) -> ndarray:
         """The model coefficients
         """
         return self.model_coef
     
     @property
-    def poly_str(self):
+    def poly_str(self) -> str:
         """A string representation of the input polynomial
         """
         # only create this if requested, probably don't need it most of the time
