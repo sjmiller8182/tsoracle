@@ -376,6 +376,22 @@ class ARIMA(Generator):
                                       self.var,
                                       seed)
 
+    def factor_table(self, table_type: str = 'both'):
+        """Create a factor table from the factors in the generator
+
+        Parameters
+        ----------
+        table_type: str
+            Options are 'both' | 'AR' | 'MA'
+        
+        Returns
+        -------
+        table: np.ndarray
+            Formatted string containing the factor table.
+            Use `print()`.
+        """
+        raise NotImplementedError
+
 class Linear(Generator):
     """Generator for linearly deterministic signals.
     
