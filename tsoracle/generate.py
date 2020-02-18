@@ -279,7 +279,8 @@ class Noise(Generator):
         """
         self.var = var
 
-    def gen(self, size: int, 
+    def gen(self, 
+            size: int, 
             seed: float = None) -> ndarray:
         """Generate a realization of given size.
 
@@ -352,7 +353,14 @@ class ARIMA(Generator):
         self.s = s
         self.var = var
 
-    def gen(self, size: int, 
+    @property
+    def coef(self):
+        """Get the coefficients of this generator
+        """
+        raise NotImplementedError
+
+    def gen(self, 
+            size: int, 
             seed: float = None) -> ndarray:
         """Generate a realization of given size.
 
@@ -433,7 +441,14 @@ class Linear(Generator):
         self.slope = slope
         self.var = var
 
-    def gen(self, size: int, 
+    @property
+    def coef(self):
+        """Get the coefficients of this generator
+        """
+        raise NotImplementedError
+
+    def gen(self, 
+            size: int, 
             seed: float = None) -> ndarray:
         """Generate a realization of given size.
 
@@ -500,7 +515,14 @@ class Sinusoidal(Generator):
         self.shift = shift
         self.var = var
 
-    def gen(self, size: int, 
+    @property
+    def coef(self):
+        """Get the coefficients of this generator
+        """
+        raise NotImplementedError
+
+    def gen(self, 
+            size: int, 
             seed: float = None) -> ndarray:
         """Generate a realization of given size.
 
