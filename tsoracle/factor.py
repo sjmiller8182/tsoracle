@@ -13,11 +13,11 @@ def table(polynomial: ndarray):
 
     An example AR polynomial is
         
-    (1 + 0.8 B)(1 - 1.2 B + 0.4 B^2) X_t = 0
+    (1 - 1.2 B + 0.4 B^2) X_t = 0
 
     This would be entered as 
     
-    table( [ [-0.8] , [1.2, -0.4] ] )
+    table( [1.2, -0.4] )
 
     Acts like `tswge::factor.wge`
     """
