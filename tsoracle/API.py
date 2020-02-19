@@ -118,7 +118,8 @@ class Filter(ABC):
         # get frequency response from filter transfer function
         w, h = freqz(self.b, self.a, worN=points)
         # make the plot
-        ax.plot(w, np.abs(h), color = 'black')
+        # also need to scale w to frequency i.e. w = 2*pi*f
+        ax.plot(w / (2 * np.pi), np.abs(h), color = 'black')
         ax.set_xlim(0, 0.5)
         ax.set_ylabel('Magnitude')
         ax.set_xlabel('Frequency (Hz)')
