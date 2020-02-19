@@ -37,6 +37,32 @@ class MovingAverage(Filter):
             raise ValueError('Order of a moving average filter must be at least 2.')
         super().__init__(np.ones(order), order)
 
+class Difference(Filter):
+    """A difference filter
+    
+    Methods
+    -------
+    apply(realization)
+        Apply filter to realization
+    plot_response(ax = None, figsize = (10, 10), points = 2000)
+        Plot the frequency response of the filter
+    """
+
+    def __init__(self,
+                 order: int) -> None:
+        """
+        Parameters
+        ----------
+        order: integer
+            Order of the filter.
+        """
+        if not isinstance(order, int):
+            raise TypeError('Input for order must an integer.')
+        if order < 1:
+            raise ValueError('Order of a difference filter must be at least 1.')
+        super().__init__(np.insert(np.append(np.zeros(order - 1), -1), 0, 1), 1)
+        
+        
 class Butterworth(Filter):
     """A Butterworth filter
 
