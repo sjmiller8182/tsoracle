@@ -11,6 +11,7 @@ from pandas import Series
 
 # API
 from tsoracle.API import Generator
+from tsoracle.factor import roots_in_unit_circle
 
 # functional API
 
@@ -253,6 +254,10 @@ def arma(size: int = 100,
     # check for input errors
     if size < 1:
         raise ValueError('The value for size must be strictly positive')
+
+    if roots_in_unit_circle(phi, theta):
+        raise ValueError('The input polynomials have roots in the unit circle. \
+                          This is not an ARMA process.')
 
     arparams = np.array(phi)
     maparams = np.array(theta)
