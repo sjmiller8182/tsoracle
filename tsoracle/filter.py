@@ -62,7 +62,7 @@ class Butterworth(Filter):
     """
 
     def __init__(self,
-                 cutoff: Union[List[float, float], List[float]],
+                 cutoff: Union[List[float]],
                  type: str,
                  order: int = 5) -> None:
         """
