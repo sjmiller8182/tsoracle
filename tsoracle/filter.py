@@ -71,4 +71,5 @@ class Butterworth(Filter):
         order: integer
             Order of the filter.
         """
-        super().__init__(*butter(order, cutoff, btype=type))
+        # scale order because butter assumes width 0 -> 1
+        super().__init__(*butter(np.array(order)*2, cutoff, btype=type))
