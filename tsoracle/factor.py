@@ -8,7 +8,52 @@ from numpy.polynomial.polynomial import polyroots, polyfromroots, polymul
 # types
 from numpy import poly1d, ndarray
 
-def table(polynomial: ndarray):
+def get_roots(coef: Union[ndarray, List]) -> ndarray:
+    """Calculate roots from an AR or MA polynomial
+
+    Parameters
+    ----------
+    coef: list-like
+        A set of AR or MA coefficients i.e. the phis and thetas.
+
+        An example AR polynomial is
+        
+        (1 - 1.2 B + 0.4 B^2) X_t = 0
+    
+        This would be entered as 
+        
+        get_roots( [ [1.2, -0.4] ] )
+
+        and the output would be 
+
+        [1.5-0.5j, 1.5+0.5j]
+
+    """
+    polynomial = np.insert(np.negative(coef), 0, 1)
+    return polyroots(polynomial)
+
+def roots_in_unit_circle(phi:Union[List, ndarray] = 0,
+                         theta:Union[List, ndarray] = None) -> bool:
+    """Check if any roots from an AR or MA polynomial are inside the unit circle
+    """
+
+    # check for roots in phi section
+    if phi is not None:
+        phi_roots = get_roots(phi)
+        roots_in_phi = np.any(np.absolute(phi_roots) < 1)
+    else:
+        roots_in_phi = False
+
+    # check for roots in theta section
+    if theta is not None:
+        theta_roots = get_roots(theta)
+        roots_in_theta = np.any(np.absolute(theta_roots) < 1)
+    else:
+        roots_in_theta = False
+
+    return roots_in_theta or roots_in_phi
+
+def table(polynomial: Union[ndarray, List]) -> str:
     """Create a factor table from a polynomial
 
     An example AR polynomial is
@@ -104,12 +149,6 @@ def poly_to_string(poly: ndarray) -> str:
             char += str(np.round(element, 6))[1:]
             char += ('*x^' + str(i))
     return char
-
-def roots_in_unit_circle(phi:Union[List, ndarray] = 0,
-                         theta:Union[List, ndarray] = 0) -> bool:
-    """Check if any roots from an AR or MA polynomial are inside the unit circle
-    """
-    raise NotImplementedError
 
 class TSPolynomial:
     """Container for a time series polynomial.

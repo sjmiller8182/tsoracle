@@ -9,6 +9,52 @@ from numpy import ndarray
 
 class TestMultiply(unittest.TestCase):
 
+    def test_get_roots(self):
+        """Unit tests for get_roots
+        """
+        # verify a polynomial that has real roots
+        roots = factor.get_roots([1.2, 0.4])
+        self.assertAlmostEqual(-3.679449, roots[0], 6)
+        self.assertAlmostEqual(0.679449, roots[1], 6)
+        # verify a polynomial that has complex roots
+        roots = factor.get_roots([1.2, -0.4])
+        self.assertAlmostEqual(-0.5, roots[0].imag, 6)
+        self.assertAlmostEqual(1.5, roots[0].real, 6)
+        self.assertAlmostEqual(0.5, roots[1].imag, 6)
+        self.assertAlmostEqual(1.5, roots[1].real, 6)
+
+    def test_roots_in_unit_circle(self):
+        """Unit tests for roots_in_unit_circle
+        """
+        ## AR only
+        # verify 2 real roots outside of unit circle
+        self.assertFalse(factor.roots_in_unit_circle([0.6, -0.4], None))
+        # verify 2 real roots one inside of unit circle
+        self.assertTrue(factor.roots_in_unit_circle([1.2, 0.4], None))
+        # verify 2 imag roots both inside of unit circle
+        self.assertFalse(factor.roots_in_unit_circle([1.2, -0.4], None))
+        
+        ## MA only
+        # verify 2 real roots outside of unit circle
+        self.assertFalse(factor.roots_in_unit_circle(None, [0.6, -0.4]))
+        # verify 2 real roots one inside of unit circle
+        self.assertTrue(factor.roots_in_unit_circle(None, [1.2, 0.4]))
+        # verify 2 imag roots both inside of unit circle
+        self.assertFalse(factor.roots_in_unit_circle(None, [1.2, -0.4]))
+
+        ## Test Combinations
+        # verify 2 real roots one inside of unit circle in the AR part
+        # verify 2 real roots outside of unit circle in the MA part
+        self.assertTrue(factor.roots_in_unit_circle([1.2, 0.4], [0.6, -0.4]))
+
+        # verify 2 real roots outside of unit circle in the AR part
+        # verify 2 real roots outside of unit circle in the MA part
+        self.assertFalse(factor.roots_in_unit_circle([0.6, -0.4], [0.6, -0.4]))
+
+        # verify 2 real roots outside of unit circle in the AR part
+        # verify 2 real roots outside of unit circle in the MA part
+        self.assertFalse(factor.roots_in_unit_circle([0.6, -0.4], [1.2, -0.4]))
+
     def test_multiply(self):
         """Unit tests for multiply
         """
