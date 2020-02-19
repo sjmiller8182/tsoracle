@@ -3,6 +3,7 @@ from typing import Callable, Tuple, List, Union
 
 # anaconda API
 import numpy as np
+from statsmodels.tsa.arima_process import arma_generate_sample
 
 # custom types
 from numpy import ndarray
@@ -253,7 +254,12 @@ def arma(size: int = 100,
     if size < 1:
         raise ValueError('The value for size must be strictly positive')
 
-    raise NotImplementedError
+    arparams = np.array(phi)
+    maparams = np.array(theta)
+    arparams = np.r_[1, np.negative(arparams)]
+    maparams = np.r_[1, maparams]
+
+    return arma_generate_sample(arparams, maparams, size, sigma = var)
 
 # Object-O API
 
@@ -355,12 +361,6 @@ class ARIMA(Generator):
         self.s = s
         self.var = var
 
-    @property
-    def coef(self):
-        """Get the coefficients of this generator
-        """
-        raise NotImplementedError
-
     def gen(self, 
             size: int, 
             seed: float = None) -> ndarray:
@@ -443,12 +443,6 @@ class Linear(Generator):
         self.slope = slope
         self.var = var
 
-    @property
-    def coef(self):
-        """Get the coefficients of this generator
-        """
-        raise NotImplementedError
-
     def gen(self, 
             size: int, 
             seed: float = None) -> ndarray:
@@ -516,12 +510,6 @@ class Sinusoidal(Generator):
         self.freq = freq
         self.shift = shift
         self.var = var
-
-    @property
-    def coef(self):
-        """Get the coefficients of this generator
-        """
-        raise NotImplementedError
 
     def gen(self, 
             size: int, 
