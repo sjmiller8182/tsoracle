@@ -55,6 +55,34 @@ class TestMultiply(unittest.TestCase):
         # verify 2 real roots outside of unit circle in the MA part
         self.assertFalse(factor.roots_in_unit_circle([0.6, -0.4], [1.2, -0.4]))
 
+    def test_to_glp(self):
+        """Unit tests for to_glp
+        """
+
+        # no polynomials should produce a one followed by zeros
+        psis = factor.to_glp(lags = 8)
+
+        self.assertAlmostEqual(psis[0], 1, 10)
+        self.assertAlmostEqual(psis[1], 0, 10)
+        self.assertAlmostEqual(psis[2], 0, 10)
+        self.assertAlmostEqual(psis[3], 0, 10)
+        self.assertAlmostEqual(psis[4], 0, 10)
+        self.assertAlmostEqual(psis[5], 0, 10)
+        self.assertAlmostEqual(psis[6], 0, 10)
+        self.assertAlmostEqual(psis[7], 0, 10)
+
+        # a functional test
+        psis = factor.to_glp([0.9], [ -0.3, -0.4], 8)
+
+        self.assertAlmostEqual(psis[0], 1.0, 10)
+        self.assertAlmostEqual(psis[1], 1.2, 10)
+        self.assertAlmostEqual(psis[2], 1.48, 10)
+        self.assertAlmostEqual(psis[3], 1.332, 10)
+        self.assertAlmostEqual(psis[4], 1.1988, 10)
+        self.assertAlmostEqual(psis[5], 1.07892, 10)
+        self.assertAlmostEqual(psis[6], 0.971028, 10)
+        self.assertAlmostEqual(psis[7], 0.8739252, 10)
+
     def test_multiply(self):
         """Unit tests for multiply
         """

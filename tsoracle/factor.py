@@ -5,6 +5,7 @@ from typing import List, Union
 import numpy as np
 # polynomials
 from numpy.polynomial.polynomial import polyroots, polyfromroots, polymul
+from scipy.signal import lfilter
 # types
 from numpy import poly1d, ndarray
 
@@ -70,6 +71,56 @@ def table(polynomial: Union[ndarray, List]) -> str:
     roots = polyroots(polynomial)
 
     raise NotImplementedError
+
+def to_glp(phi:Union[List, ndarray] = None,
+           theta:Union[List, ndarray] = None,
+           lags: int = 0) -> ndarray:
+    """Calculate the GLP coefficients
+
+    The inputs are defined as model phi and theta coefficients
+
+    As an example, the following model
+
+    (1 - 0.9 B) X_t = (1 + 0.3 B + 0.4 B^2) = a_t
+
+    should be input as
+
+    phi = [ 0.9 ]
+    theta = [ -0.3 , -0.4 ]
+
+    Parameters
+    ----------
+    phi: list-like
+        A set of AR coefficients i.e. the phis.
+    theta: list-like
+        A set of MA coefficients i.e. the thetas.
+    lags:
+        The number of coefficients to calculate.
+    
+    Returns
+    -------
+    glp_coef: ndarray
+        The coefficients representing the input model.
+        The first element is always 1.
+
+    Acts like `tswge::psi.weights.wge`
+    """
+    if theta is None:
+        theta_poly = [1.0]
+    else: 
+        # negate poly and insert leading one
+        theta_poly = np.insert(np.negative(theta),0 , 1.0)
+    if phi is None:
+        phi_poly = [1.0]
+    else:
+        phi_poly = np.insert(np.negative(phi),0 , 1.0)
+
+    # psi values can be calculated as the impulse response to
+    # the filter
+    input_array = np.zeros(lags, dtype = float)
+    input_array[0] = 1
+    # return the filter response
+    return lfilter(theta_poly, phi_poly, input_array)
 
 def multiply(factors: List[List[float]]) -> ndarray:
     """Multiply together time series factors
