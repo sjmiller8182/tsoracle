@@ -28,11 +28,11 @@ def get_glp_multipliers(psi_values: Union[List, ndarray, Series]):
         psi_terms[x] = np.sqrt((psi_values[:x + 1] ** 2).sum())
     return psi_terms
 
-def forecast_half_limits(phi = None,
-                         theta = None,
-                         steps: int = 0,
-                         wnv: float = 1.0,
-                         conf_level = 1.96):
+def get_half_limits(phi = None,
+                    theta = None,
+                    steps: int = 0,
+                    wnv: float = 1.0,
+                    conf_level = 1.96):
     """Calculate the GLP coefficients
     
     The inputs are defined as model phi and theta coefficients
