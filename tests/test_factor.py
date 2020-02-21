@@ -55,6 +55,13 @@ class TestMultiply(unittest.TestCase):
         # verify 2 real roots outside of unit circle in the MA part
         self.assertFalse(factor.roots_in_unit_circle([0.6, -0.4], [1.2, -0.4]))
 
+    def test_get_system_frequency(self):
+        """Unit tests for get_system_frequency
+        """
+
+        self.assertAlmostEqual(0.05120819117478338, 
+                               factor.get_system_freq(*[1.2, -0.4]), 10)
+
     def test_to_glp(self):
         """Unit tests for to_glp
         """

@@ -9,6 +9,11 @@ from scipy.signal import lfilter
 # types
 from numpy import poly1d, ndarray
 
+# constants
+RECIPROCAL_2PI = 0.15915494309189535
+"""Constant for system frequency calculation: 1 / (2 * pi)
+"""
+
 def get_roots(coef: Union[ndarray, List]) -> ndarray:
     """Calculate roots from an AR or MA polynomial
 
@@ -53,6 +58,29 @@ def roots_in_unit_circle(phi:Union[List, ndarray] = 0,
         roots_in_theta = False
 
     return roots_in_theta or roots_in_phi
+
+def get_system_freq(first_order_coef: float, sec_order_coef: float) -> float:
+    """Calculates the system frequency for a 2nd degree polynomial
+    with complex roots.
+
+    Parameters
+    ----------
+    first_order_coef: float
+        The coefficient of the first order term.
+    sec_order_coef: float
+        The coefficient of the second order term.
+
+    Returns
+    -------
+    frequency: float
+        The system frequency (Hz)
+
+    """
+    # calculate the radial angle from coefficients
+    radial_angle = first_order_coef \
+                    / (2 * np.sqrt(np.negative(sec_order_coef)))
+
+    return (RECIPROCAL_2PI * np.arccos(radial_angle))
 
 def table(polynomial: Union[ndarray, List]) -> str:
     """Create a factor table from a polynomial
