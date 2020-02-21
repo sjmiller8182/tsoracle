@@ -121,3 +121,110 @@ def sample(x: Union[ndarray, Series, List],
     ax[1,1].plot(*periodogram(windowed_sd), color = 'black')
     ax[1,1].set_title('Spectral Density (' + window_name + ')')
     ax[1,1].set_xlabel('Frequency')
+
+def constellation(zeros: np.ndarray,
+                  poles: np.ndarray = None,
+                  scale_magnitude = False,
+                  scale_factor: float = 1000,
+                  ax = None,
+                  figsize = None) -> None:
+    """Plots roots on the complex plane with reference to the unit circle
+    
+    Parameters
+    ----------
+    zeros: list-like
+        A set of roots.
+    poles: list-like
+        A set of roots.
+    scale_magnitude: bool
+        Option to scale the marker based on the 
+        absolute magnitude of the root.
+    scale_factor: float
+        Marker scaling factor.
+        Only used if `scale_magnitude` is set to `True`.
+    ax: float
+        The forecast confidence level as the multiplier
+        (default is 95% confidence).
+    figsize: Tuple[float, float]
+        Size of the figure to generate.
+        Only used if `None` provided to `ax`.
+    """
+    
+    # create unit circle corrds
+    x_corr = np.array([x for x in range(-1000, 1001)]) / 1000
+    y_corr = np.sqrt(1 - x_corr ** 2)
+    
+    # create plot
+    if ax is None:
+        if figsize is None:
+            # set a default for figsize
+            figsize = (10, 10)
+        # generate a new plotting axis if none is given
+        fig, ax = plt.subplots(figsize = (10, 10))
+    ax.grid()
+    ax.set_ylabel('Imaginary')
+    ax.set_xlabel('Real')
+    ax.set_title('Constallation Plot')
+    
+    # plot the unit circle
+    ax.plot(x_corr, y_corr, color = 'blue')
+    ax.plot(x_corr, np.negative(y_corr), color = 'blue')
+    
+    # concat to consider all roots
+    # to set plot limits correctly
+    if poles is not None:
+        roots = np.concatenate((zeros, poles))
+    else: 
+        roots = zeros
+    
+    # set plotting scales to preserve squareness
+    max_abs = np.array(
+        [
+            np.abs(roots.imag.max()),
+            np.abs(roots.imag.min()),
+            np.abs(roots.real.max()),
+            np.abs(roots.real.min())
+        ]
+    ).max()
+    # make limits square
+    ax.set_ylim(-max_abs - 0.5, max_abs + 0.5)
+    ax.set_xlim(max_abs + 0.5, -max_abs - 0.5)
+
+    # check for roots in the unit circle
+    zeros_in_circle_idx = np.where(np.abs(zeros) < 1.0)
+    zeros_idx = np.where(np.abs(zeros) >= 1.0)
+    
+    # create size scaling from root sizes
+    size = None
+    if scale_magnitude:
+        size = np.reciprocal(np.exp(np.abs(zeros[zeros_idx]))) * scale_factor
+    # plot the zeros
+    ax.scatter(zeros[zeros_idx].real,
+               zeros[zeros_idx].imag,
+               s = size, label = 'Zeros')
+    if zeros[zeros_in_circle_idx].size != 0:
+        ax.scatter(zeros[zeros_in_circle_idx].real,
+                   zeros[zeros_in_circle_idx].imag,
+                   s = 100, color = 'red',
+                   label = 'Unstable Zeros')
+    
+    # plot the poles
+    if poles is not None:
+        
+        # check for roots in the unit circle
+        poles_in_circle_idx = np.where(np.abs(poles) < 1.0)
+        poles_idx = np.where(np.abs(poles) >= 1.0)
+        
+        size = None
+        if scale_magnitude:
+            size = np.reciprocal(np.exp(np.abs(poles))) * scale_factor
+        ax.scatter(poles.real[poles_idx], poles.imag[poles_idx],
+                   s = size, marker = 'x', label = 'Poles')
+        
+        if poles[poles_in_circle_idx].size != 0:
+            ax.scatter(poles[poles_in_circle_idx].real,
+                       poles[poles_in_circle_idx].imag,
+                       s = 10, marker = 'x',
+                       color = 'red', label = 'Unstable Poles')
+        # only create the legend when both sets of roots are provided
+        ax.legend()
