@@ -3,7 +3,8 @@ from typing import Callable, Tuple, List, Union
 
 # anaconda API
 import numpy as np
-from statsmodels.tsa.arima_process import arma_generate_sample
+from numpy.random import RandomState
+from scipy.signal import lfilter
 
 # custom types
 from numpy import ndarray
@@ -17,7 +18,7 @@ from tsoracle.factor import roots_in_unit_circle
 
 def noise(var: Union[float, int], 
           size: int, 
-          seed: float = None) -> ndarray:
+          random_state: float = None) -> ndarray:
     """ Generate sequential noise from a random normal .
 
     Parameters
@@ -26,7 +27,7 @@ def noise(var: Union[float, int],
     	Nosie variance level.
     size: scalar int
         Number of samples to generate, strictly positive.
-    seed: scalar int, optional
+    random_state: scalar int, optional
         Seed the random number generator
     
     Returns
@@ -35,9 +36,6 @@ def noise(var: Union[float, int],
         Sequential noise.
 
     """
-    
-    if seed is not None:
-        np.random.seed(seed)
 
     if size < 1:
         raise ValueError('The value for size must be strictly positive')
@@ -45,8 +43,8 @@ def noise(var: Union[float, int],
     if var == 0:
         noise_signal = np.zeros(size)
     else:
-        noise_signal = np.random.normal(scale = np.sqrt(var),
-                                        size = size)
+        noise_signal = RandomState(random_state).normal(scale = np.sqrt(var),
+                                                        size = size)
 
     return noise_signal
 
@@ -54,7 +52,7 @@ def linear(intercept: float,
            slope: float, 
            size: int, 
            var: float = 0.01, 
-           seed: float = None):
+           random_state: float = None):
     """ Generate linear signal plus noise.
 
     Parameters
@@ -67,7 +65,7 @@ def linear(intercept: float,
         Number of samples to generate.
     var: scalar float, optional
     	Nosie variance level.
-    seed: scalar int, optional
+    random_state: scalar int, optional
         Seed the random number generator
 
     Returns
@@ -76,10 +74,6 @@ def linear(intercept: float,
         Sequential linear signal.
 
     """
-
-    if seed is not None:
-        np.random.seed(seed)
-
     # check for input errors
     if size < 1:
         raise ValueError('The value for size must be strictly positive')
@@ -87,7 +81,9 @@ def linear(intercept: float,
     # generate time samples
     time_index = np.arange(size)
     # get noise
-    sig_noise = noise(var = var, size = time_index.size)
+    sig_noise = noise(var = var, 
+                      size = time_index.size, 
+                      random_state = random_state)
     # calculate signal
     signal = slope * time_index + intercept
 
@@ -98,7 +94,7 @@ def sinusoidal(mag: Union[float, ndarray, Series, List],
               shift: Union[float, ndarray, Series, List], 
               size: int, 
               var: float = 0.01, 
-              seed: float = None):
+              random_state: float = None):
     """ Generate sinusoidal signal plus noise.
 
     Parameters
@@ -113,7 +109,7 @@ def sinusoidal(mag: Union[float, ndarray, Series, List],
         Number of samples to generate.
     var: scalar float, optional
     	Nosie variance level.
-    seed: scalar int, optional
+    random_state: scalar int, optional
         Seed the random number generator.
 
     Returns
@@ -122,9 +118,6 @@ def sinusoidal(mag: Union[float, ndarray, Series, List],
         Sequential sinusoidal signal.
 
     """
-
-    if seed is not None:
-        np.random.seed(seed)
 
     mag = np.array(mag).reshape(np.array(mag).size, 1)
     freq = np.array(freq).reshape(np.array(freq).size, 1)
@@ -139,9 +132,12 @@ def sinusoidal(mag: Union[float, ndarray, Series, List],
     for i, _ in enumerate(time_index):
         time_index[i] = np.linspace(-np.pi, np.pi, size)
     # calculate signal
-    signal = np.sum(mag * np.sin(2 * np.pi * freq * time_index + shift), axis = 0)
+    signal = np.sum(mag * np.sin(2 * np.pi * freq * time_index + shift),
+                    axis = 0)
     # get noise
-    sig_noise = noise(var = var, size = size)
+    sig_noise = noise(var = var,
+                      size = size,
+                      random_state = random_state)
 
     return signal + sig_noise
 
@@ -151,7 +147,7 @@ def arima_with_seasonality(size: int = 100,
                            d: int = 0,
                            s: int = 0,
                            var: float = 0.01, 
-                           seed: float = None) -> ndarray:
+                           random_state: float = None) -> ndarray:
     """Simulate a realization from an ARIMA with seasonality characteristic.
 
     Parameters
@@ -168,7 +164,7 @@ def arima_with_seasonality(size: int = 100,
         Seasonality process order
     var: scalar float, optional
     	Nosie variance level.
-    seed: scalar int, optional
+    random_state: scalar int, optional
         Seed the random number generator.
 
     Returns
@@ -176,9 +172,6 @@ def arima_with_seasonality(size: int = 100,
     signal: np.ndarray
         Simulated ARIMA with seasonality.
     """
-
-    if seed is not None:
-        np.random.seed(seed)
 
     # check for input errors
     if size < 1:
@@ -191,7 +184,7 @@ def arima(size: int = 100,
           theta: Union[float, ndarray] = 0,
           d: int = 0,
           var: float = 0.01, 
-          seed: float = None) -> ndarray:
+          random_state: float = None) -> ndarray:
     # inherit from arima_with_seasonality
     """Simulate a realization from an ARIMA characteristic.
 
@@ -207,7 +200,7 @@ def arima(size: int = 100,
         ARIMA process difference order
     var: scalar float, optional
     	Nosie variance level.
-    seed: scalar int, optional
+    random_state: scalar int, optional
         Seed the random number generator.
 
     Returns
@@ -216,16 +209,13 @@ def arima(size: int = 100,
         Simulated ARIMA.
     """
 
-    if seed is not None:
-        np.random.seed(42)
-
     raise NotImplementedError
 
 def arma(size: int = 100,
          phi: Union[float, ndarray] = 0,
          theta: Union[float, ndarray] = 0,
          var: float = 0.01, 
-         seed: float = None) -> ndarray:
+         random_state: float = None) -> ndarray:
     # inherit from arima_with_seasonality
     """Simulate a realization from an ARMA characteristic.
 
@@ -239,7 +229,7 @@ def arma(size: int = 100,
         MA process order
     var: scalar float, optional
     	Nosie variance level.
-    seed: scalar int, optional
+    random_state: scalar int, optional
         Seed the random number generator.
 
     Returns
@@ -247,9 +237,6 @@ def arma(size: int = 100,
     signal: np.ndarray
         Simulated ARMA.
     """
-
-    if seed is not None:
-        np.random.seed(seed)
 
     # check for input errors
     if size < 1:
@@ -264,7 +251,11 @@ def arma(size: int = 100,
     arparams = np.r_[1, np.negative(arparams)]
     maparams = np.r_[1, maparams]
 
-    return arma_generate_sample(arparams, maparams, size, sigma = var)
+    sig_noise = noise(var,size,random_state = random_state)
+
+    signal = lfilter(maparams, arparams, sig_noise)
+
+    return signal
 
 # Object-O API
 
@@ -294,7 +285,7 @@ class Noise(Generator):
 
     def gen(self, 
             size: int, 
-            seed: float = None) -> ndarray:
+            random_state: float = None) -> ndarray:
         """Generate a realization of given size.
 
         Parameters
@@ -302,7 +293,7 @@ class Noise(Generator):
         size: scalar int
             Number of samples to generate.
             Must be strictly positive.
-        seed: scalar int, optional
+        random_state: scalar int, optional
             Seed the random number generator.
 
         Returns
@@ -311,7 +302,7 @@ class Noise(Generator):
             Simulated noise.
         """
 
-        return noise(self.var, size, seed)
+        return noise(self.var, size, random_state)
 
 class ARIMA(Generator):
     """Generator for ARUMA (ARIMA with seasonality) class signals.
@@ -368,7 +359,7 @@ class ARIMA(Generator):
 
     def gen(self, 
             size: int, 
-            seed: float = None) -> ndarray:
+            random_state: float = None) -> ndarray:
         """Generate a realization of given size.
 
         Parameters
@@ -376,7 +367,7 @@ class ARIMA(Generator):
         size: scalar int
             Number of samples to generate.
             Must be strictly positive.
-        seed: scalar int, optional
+        random_state: scalar int, optional
             Seed the random number generator.
 
         Returns
@@ -391,7 +382,7 @@ class ARIMA(Generator):
                                       self.d, 
                                       self.s, 
                                       self.var,
-                                      seed)
+                                      random_state)
 
     def factor_table(self, table_type: str = 'both'):
         """Create a factor table from the factors in the generator
@@ -450,7 +441,7 @@ class Linear(Generator):
 
     def gen(self, 
             size: int, 
-            seed: float = None) -> ndarray:
+            random_state: float = None) -> ndarray:
         """Generate a realization of given size.
 
         Parameters
@@ -458,7 +449,7 @@ class Linear(Generator):
         size: scalar int
             Number of samples to generate.
             Must be strictly positive.
-        seed: scalar int, optional
+        random_state: scalar int, optional
             Seed the random number generator.
 
         Returns
@@ -471,7 +462,7 @@ class Linear(Generator):
                       self.slope,
                       size,
                       self.var,
-                      seed)
+                      random_state)
 
 class Sinusoidal(Generator):
     """Generator for sinusoidal deterministic signals.
@@ -518,7 +509,7 @@ class Sinusoidal(Generator):
 
     def gen(self, 
             size: int, 
-            seed: float = None) -> ndarray:
+            random_state: float = None) -> ndarray:
         """Generate a realization of given size.
 
         Parameters
@@ -526,7 +517,7 @@ class Sinusoidal(Generator):
         size: scalar int
             Number of samples to generate.
             Must be strictly positive.
-        seed: scalar int, optional
+        random_state: scalar int, optional
             Seed the random number generator.
 
         Returns
@@ -540,4 +531,4 @@ class Sinusoidal(Generator):
                           self.shift, 
                           size,
                           self.var,
-                          seed)
+                          random_state)
