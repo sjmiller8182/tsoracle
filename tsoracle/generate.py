@@ -212,8 +212,8 @@ def arima(size: int = 100,
     raise NotImplementedError
 
 def arma(size: int = 100,
-         phi: Union[float, ndarray] = 0,
-         theta: Union[float, ndarray] = 0,
+         phi: Union[float, ndarray] = None,
+         theta: Union[float, ndarray] = None,
          var: float = 0.01, 
          random_state: float = None) -> ndarray:
     # inherit from arima_with_seasonality
@@ -246,14 +246,18 @@ def arma(size: int = 100,
         raise ValueError('The input polynomials have roots in the unit circle. \
                           This is not an ARMA process.')
 
-    arparams = np.array(phi)
-    maparams = np.array(theta)
-    arparams = np.r_[1, np.negative(arparams)]
-    maparams = np.r_[1, maparams]
+    if phi is None:
+        phi_poly = np.ones(1)
+    else:
+        phi_poly = np.insert(np.negative(phi),0,1)
+    if theta is None:
+        theta_poly = np.ones(1)
+    else:
+        theta_poly = np.insert(theta, 0, 1)
 
     sig_noise = noise(var,size,random_state = random_state)
 
-    signal = lfilter(maparams, arparams, sig_noise)
+    signal = lfilter(theta_poly, phi_poly, sig_noise)
 
     return signal
 
