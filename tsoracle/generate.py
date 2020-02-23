@@ -12,7 +12,7 @@ from pandas import Series
 
 # API
 from tsoracle.API import Generator
-from tsoracle.factor import roots_in_unit_circle
+from tsoracle import plotting, factor
 
 # functional API
 
@@ -242,7 +242,7 @@ def arma(size: int = 100,
     if size < 1:
         raise ValueError('The value for size must be strictly positive')
 
-    if roots_in_unit_circle(phi, theta):
+    if factor.roots_in_unit_circle(phi, theta):
         raise ValueError('The input polynomials have roots in the unit circle. \
                           This is not an ARMA process.')
 
@@ -360,6 +360,18 @@ class ARIMA(Generator):
         self.d = d
         self.s = s
         self.var = var
+        
+        factors = list()
+
+        if self.phi is not None:
+            factors.append(self.phi)
+        if self.s > 1:
+            factors.append(
+                np.append(np.zeros(s-1), 1)
+            )
+        if self.d > 0:
+            factors += [[1.0] for x in range(d)]
+        self.ar_polynomial = factor.multiply(factors)
 
     def gen(self, 
             size: int, 
@@ -387,22 +399,48 @@ class ARIMA(Generator):
                                       self.s, 
                                       self.var,
                                       random_state)
+    
+    def plot_constellation(self, 
+                           scale_magnitude: bool = False,
+                           scale_factor: float = 1000,
+                           ax = None,
+                           figsize = None):
+        """Plots roots on the complex plane with reference to the unit circle
 
-    def factor_table(self, table_type: str = 'both'):
+        Parameters
+        ----------
+        scale_magnitude: bool
+            Option to scale the marker based on the 
+            absolute magnitude of the root.
+        scale_factor: float
+            Marker scaling factor.
+            Only used if `scale_magnitude` is set to `True`.
+        ax: float
+            The forecast confidence level as the multiplier
+            (default is 95% confidence).
+        figsize: Tuple[float, float]
+            Size of the figure to generate.
+            Only used if `None` provided to `ax`.
+
+        """
+        plotting.constellation(self.ar_polynomial,
+                               self.theta, 
+                               scale_magnitude = scale_magnitude,
+                               scale_factor=scale_factor,
+                               ax=ax,
+                               figsize=figsize)
+
+    def factor_table(self):
         """Create a factor table from the factors in the generator
 
         Parameters
         ----------
-        table_type: str
-            Options are 'both' | 'AR' | 'MA'
-        
-        Returns
-        -------
-        table: np.ndarray
-            Formatted string containing the factor table.
-            Use `print()`.
+        ar_polynomial: list-like
+            List of phi coefficients.
+        ma_polynomial: list-like
+            List of theta coefficients.
         """
-        raise NotImplementedError
+        factor.table(self.ar_polynomial, self.theta)
 
 class Linear(Generator):
     """Generator for linearly deterministic signals.
