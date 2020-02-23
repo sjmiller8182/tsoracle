@@ -224,7 +224,7 @@ def constellation(zeros: np.ndarray,
         if poles[poles_in_circle_idx].size != 0:
             ax.scatter(poles[poles_in_circle_idx].real,
                        poles[poles_in_circle_idx].imag,
-                       s = 10, marker = 'x',
+                       s = 100, marker = 'x',
                        color = 'red', label = 'Unstable Poles')
         # only create the legend when both sets of roots are provided
         ax.legend()
