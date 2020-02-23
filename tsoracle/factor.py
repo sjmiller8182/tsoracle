@@ -162,7 +162,7 @@ def table(polynomial: ndarray) -> None:
     
     """
     
-    roots = np.roots( np.insert(np.negative(polynomial)[::-1], 0 ,1) )
+    roots = np.roots( np.append(np.negative(polynomial)[::-1],1) )
     # imag root pairs are treated as one
     all_roots = roots[np.where(roots.imag >= 0.0)]
     
