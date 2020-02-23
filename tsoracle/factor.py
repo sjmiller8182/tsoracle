@@ -8,6 +8,8 @@ from numpy.polynomial.polynomial import polyroots, polyfromroots, polymul
 from scipy.signal import lfilter
 # types
 from numpy import poly1d, ndarray
+# this package
+from tsoracle.plotting import constellation
 
 # constants
 RECIPROCAL_2PI = 0.15915494309189535
@@ -139,44 +141,95 @@ class Root:
             )
         )
         
-def table(polynomial: ndarray) -> None:
+def table(ar_polynomial: ndarray = None,
+          ma_polynomial: ndarray = None,
+          plot_roots: bool = False) -> None:
     """Create summary table of polynomial.
-    The table is printed
+    The table is printed.
     
+    Polynomial should be entered as phis and thetas.
+        
+    An example AR polynomial is
+    
+    (1 - 1.2 B + 0.4 B^2) X_t = a_t
+
+    This would be entered as 
+    
+    table( [1.2, -0.4] )
+
     Parameters
     ----------
-    factors: like-like
-        List of factors to multiply together.
-        
-        Polynomial should be entered as phis and thetas.
-        
-        An example AR polynomial is
-        
-        (1 - 1.2 B + 0.4 B^2) X_t = a_t
-    
-        This would be entered as 
-        
-        multiply( [1.2, -0.4] )
+    ar_polynomial: list-like
+        List of phi coefficients.
+    ma_polynomial: list-like
+        List of theta coefficients.
     
     Acts like `tswge::factor.wge`
     
     """
-    
-    roots = np.roots( np.append(np.negative(polynomial)[::-1],1) )
-    # imag root pairs are treated as one
-    all_roots = roots[np.where(roots.imag >= 0.0)]
+    # get the roots of the autoregressive polynomial
+    if ar_polynomial is not None:
+        ar_roots = np.roots( np.append(np.negative(ar_polynomial)[::-1], 1) )
+        all_ar_roots = ar_roots[np.where(ar_roots.imag >= 0.0)]
+    else:
+        ar_roots = None
+
+    # get the roots of the moving average polynomial
+    if ma_polynomial is not None:
+        ma_roots = np.roots( np.append(np.negative(ma_polynomial)[::-1], 1) )
+        all_ma_roots = ma_roots[np.where(ma_roots.imag >= 0.0)]
+    else:
+        all_ma_roots = None
+
+    # find any roots in common
+    if (ar_polynomial is not None) and (ma_polynomial is not None):
+        common_roots = np.intersect1d(all_ar_roots, all_ma_roots)
+
+    # convert to table
+    if all_ar_roots is not None:
+        print("\nSummary of Autoregressive Polynomial")
+        print("Factor\t\t\tRoot(s)\t\t\tAbs Recip\tSystem Freq")
+        for root in all_ar_roots:
+            conv_root = Root(root.real, root.imag)
+            print(
+                '{:24}'.format(conv_root.polynomial)
+                + '{:24}'.format(conv_root.as_string)
+                + '{:7.5f}'.format(conv_root.abs_recip)
+                + '{:16.5f}'.format(conv_root.frequency)
+            )
     
     # convert to table
-    print("Factor\t\t\tRoot(s)\t\t\tAbs Recip\tSystem Freq")
-    for root in all_roots:
-        conv_root = Root(root.real, root.imag)
-        print(
-            '{:24}'.format(conv_root.polynomial)
-            + '{:24}'.format(conv_root.as_string)
-            + '{:7.5f}'.format(conv_root.abs_recip)
-            + '{:16.5f}'.format(conv_root.frequency)
-        )
+    if all_ma_roots is not None:
+        print("\nSummary of Moving Average Polynomial")
+        print("Factor\t\t\tRoot(s)\t\t\tAbs Recip\tSystem Freq")
+        for root in all_ma_roots:
+            conv_root = Root(root.real, root.imag)
+            print(
+                '{:24}'.format(conv_root.polynomial)
+                + '{:24}'.format(conv_root.as_string)
+                + '{:7.5f}'.format(conv_root.abs_recip)
+                + '{:16.5f}'.format(conv_root.frequency)
+            )
         
+    
+    # print common factors, if any
+    if (ar_polynomial is not None) and (ma_polynomial is not None) and common_roots.size > 0: 
+        print("\nThe following factors are common to both polynomials")
+        print("Factor\t\t\tRoot(s)")
+        for root in common_roots:
+            conv_root = Root(root.real, root.imag)
+            print(
+                '{:24}'.format(conv_root.polynomial)
+                + '{:24}'.format(conv_root.as_string)
+            )
+    # Add some space
+    print('')
+    
+    # plot roots if requested
+    if plot_roots:
+        constellation(zeros = all_ar_roots,
+                    poles = all_ma_roots,
+                    scale_magnitude = True)
 
 def get_roots(coef: Union[ndarray, List]) -> ndarray:
     """Calculate roots from an AR or MA polynomial
