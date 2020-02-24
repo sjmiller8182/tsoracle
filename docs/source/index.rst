@@ -10,6 +10,16 @@ Welcome to Time Series Oracle's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+Factor
+======
+.. automodule:: tsoracle.factor
+   :members:
+
+Fit
+===
+.. automodule:: tsoracle.fit
+   :members:
+
 Generation
 ==========
 .. automodule:: tsoracle.generate

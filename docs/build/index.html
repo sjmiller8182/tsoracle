@@ -1,26 +1,17 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Welcome to Time Series Oracle’s documentation! &#8212; Time Series Oracle dev0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     'dev0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
    
@@ -29,13 +20,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body>
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <div class="section" id="welcome-to-time-series-oracle-s-documentation">
@@ -43,309 +35,702 @@
 <div class="toctree-wrapper compound">
 </div>
 </div>
-<div class="section" id="module-tsoracle.generate">
-<span id="generation"></span><h1>Generation<a class="headerlink" href="#module-tsoracle.generate" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-tsoracle.factor">
+<span id="factor"></span><h1>Factor<a class="headerlink" href="#module-tsoracle.factor" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="tsoracle.generate.arima">
-<code class="descclassname">tsoracle.generate.</code><code class="descname">arima</code><span class="sig-paren">(</span><em>size: int = 100</em>, <em>phi: typing.Union[float</em>, <em>numpy.ndarray] = 0</em>, <em>theta: typing.Union[float</em>, <em>numpy.ndarray] = 0</em>, <em>d: int = 0</em>, <em>var: float = 0.01</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#tsoracle.generate.arima" title="Permalink to this definition">¶</a></dt>
-<dd><p>Simulate a realization from an ARIMA characteristic.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>size: scalar int</strong></p>
-<blockquote>
-<div><p>Number of samples to generate.</p>
-</div></blockquote>
-<p><strong>phi: scalar float or list-like</strong></p>
-<blockquote>
-<div><p>AR process order</p>
-</div></blockquote>
-<p><strong>theta: scalar float or list-like</strong></p>
-<blockquote>
-<div><p>MA process order</p>
-</div></blockquote>
-<p><strong>d: scalar int</strong></p>
-<blockquote>
-<div><p>ARIMA process difference order</p>
-</div></blockquote>
-<p><strong>var: scalar float, optional</strong></p>
-<blockquote>
-<div><p>Nosie variance level.</p>
-</div></blockquote>
-</td>
+<dt id="tsoracle.factor.table">
+<code class="sig-prename descclassname">tsoracle.factor.</code><code class="sig-name descname">table</code><span class="sig-paren">(</span><em class="sig-param">ar_polynomial:numpy.ndarray=None</em>, <em class="sig-param">ma_polynomial:numpy.ndarray=None</em>, <em class="sig-param">plot_roots:bool=False</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#tsoracle.factor.table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create summary table of polynomial.
+The table is printed.</p>
+<p>Polynomial should be entered as phis and thetas.</p>
+<p>An example AR polynomial is</p>
+<p>(1 - 1.2 B + 0.4 B^2) X_t = a_t</p>
+<p>This would be entered as</p>
+<p>table( [1.2, -0.4] )</p>
+<p>Acts like <cite>tswge::factor.wge</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>ar_polynomial: list-like</strong></dt><dd><p>List of phi coefficients.</p>
+</dd>
+<dt><strong>ma_polynomial: list-like</strong></dt><dd><p>List of theta coefficients.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="tsoracle.factor.multiply">
+<code class="sig-prename descclassname">tsoracle.factor.</code><code class="sig-name descname">multiply</code><span class="sig-paren">(</span><em class="sig-param">factors:List[List[float]]</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#tsoracle.factor.multiply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multiply together time series factors</p>
+<p>Factors should be entered as phis and thetas</p>
+<p>An example AR polynomial is</p>
+<p>(1 + 0.8 B)(1 - 1.2 B + 0.4 B^2) X_t = 0</p>
+<p>This would be entered as</p>
+<p>multiply( [ [-0.8] , [1.2, -0.4] ] )</p>
+<p>Acts like <cite>tswge::mult.wge</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>factors: List of Lists</strong></dt><dd><p>List of factors to multiply together.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="tsoracle.factor.to_glp">
+<code class="sig-prename descclassname">tsoracle.factor.</code><code class="sig-name descname">to_glp</code><span class="sig-paren">(</span><em class="sig-param">phi:Union[List</em>, <em class="sig-param">numpy.ndarray]=None</em>, <em class="sig-param">theta:Union[List</em>, <em class="sig-param">numpy.ndarray]=None</em>, <em class="sig-param">lags:int=0</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#tsoracle.factor.to_glp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the GLP coefficients</p>
+<p>The inputs are defined as model phi and theta coefficients</p>
+<p>As an example, the following model</p>
+<p>(1 - 0.9 B) X_t = (1 + 0.3 B + 0.4 B^2) = a_t</p>
+<p>should be input as</p>
+<p>phi = [ 0.9 ]
+theta = [ -0.3 , -0.4 ]</p>
+<p>Acts like <cite>tswge::psi.weights.wge</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>phi: list-like</strong></dt><dd><p>A set of AR coefficients i.e. the phis.</p>
+</dd>
+<dt><strong>theta: list-like</strong></dt><dd><p>A set of MA coefficients i.e. the thetas.</p>
+</dd>
+<dt><strong>lags:</strong></dt><dd><p>The number of coefficients to calculate.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>glp_coef: ndarray</dt><dd><p>The coefficients representing the input model.
+The first element is always 1.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-tsoracle.fit">
+<span id="fit"></span><h1>Fit<a class="headerlink" href="#module-tsoracle.fit" title="Permalink to this headline">¶</a></h1>
+<p>Fit models to data</p>
+<dl class="class">
+<dt id="tsoracle.fit.Linear">
+<em class="property">class </em><code class="sig-prename descclassname">tsoracle.fit.</code><code class="sig-name descname">Linear</code><span class="sig-paren">(</span><em class="sig-param">scorer: callable = None</em><span class="sig-paren">)</span><a class="headerlink" href="#tsoracle.fit.Linear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Linear model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><a class="reference internal" href="#tsoracle.fit.Linear.coef" title="tsoracle.fit.Linear.coef"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coef</span></code></a></dt><dd><p>float, float: Get the fit model coefficients (slope, intercept)</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit_score</span></code></dt><dd><p>float: Get the score from fitting the model to the realization</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 51%" />
+<col style="width: 49%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>fit(size)</strong></p></td>
+<td><p>Generates a signal</p></td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">signal: np.ndarray</p>
-<blockquote class="last">
-<div><p>Simulated ARIMA.</p>
-</div></blockquote>
-</td>
+<tr class="row-even"><td><p><strong>get_noise(size)</strong></p></td>
+<td><p>Generates a signal</p></td>
 </tr>
 </tbody>
 </table>
+<dl class="method">
+<dt id="tsoracle.fit.Linear.coef">
+<em class="property">property </em><code class="sig-name descname">coef</code><a class="headerlink" href="#tsoracle.fit.Linear.coef" title="Permalink to this definition">¶</a></dt>
+<dd><p>float, float: Get the fit model coefficients (slope, intercept)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tsoracle.fit.Linear.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">self, realization:Union[numpy.ndarray, pandas.core.series.Series, List]</em><span class="sig-paren">)</span><a class="headerlink" href="#tsoracle.fit.Linear.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit model to data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>realization: list-like</strong></dt><dd><p>Fit model to given realization.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tsoracle.fit.Linear.get_noise">
+<code class="sig-name descname">get_noise</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">realization:Union[numpy.ndarray</em>, <em class="sig-param">pandas.core.series.Series</em>, <em class="sig-param">List]=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tsoracle.fit.Linear.get_noise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove fitted linear model from realization</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>realization: list-like</strong></dt><dd><p>A realization to compare with the model.
+If <cite>None</cite> is supplied,
+the realization used to fit the model will be used.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>filtered_signal: np.ndarray</dt><dd><p>Result of subtracting model from realization.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tsoracle.fit.Linear.plot_fit">
+<code class="sig-name descname">plot_fit</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">realization:Union[numpy.ndarray</em>, <em class="sig-param">pandas.core.series.Series</em>, <em class="sig-param">List]=None</em>, <em class="sig-param">ax:matplotlib.axes._axes.Axes=None</em>, <em class="sig-param">figsize:Tuple[float</em>, <em class="sig-param">float]=None</em>, <em class="sig-param">xticks:List[str]=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tsoracle.fit.Linear.plot_fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the fit model and the realization together</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>realization: list-like</strong></dt><dd><p>Plot the model together with a realization.
+If <cite>None</cite> is supplied,
+the realization used to fit the model will be used.</p>
+</dd>
+<dt><strong>ax: ax, optional</strong></dt><dd><p>An axes object to plot on. 
+If <cite>None</cite> is given, a new figure will be generated.</p>
+</dd>
+<dt><strong>figsize: Tuple[float, float], optional</strong></dt><dd><p>Size of the figure to plot.
+Only applies if <cite>ax</cite> is not supplied.</p>
+</dd>
+<dt><strong>xticks: list-like</strong></dt><dd><p>Labels for the x-axis</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-tsoracle.generate">
+<span id="generation"></span><h1>Generation<a class="headerlink" href="#module-tsoracle.generate" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="tsoracle.generate.ARIMA">
+<em class="property">class </em><code class="sig-prename descclassname">tsoracle.generate.</code><code class="sig-name descname">ARIMA</code><span class="sig-paren">(</span><em class="sig-param">phi: Union[float</em>, <em class="sig-param">numpy.ndarray] = 0</em>, <em class="sig-param">theta: Union[float</em>, <em class="sig-param">numpy.ndarray] = 0</em>, <em class="sig-param">d: int = 0</em>, <em class="sig-param">s: int = 0</em>, <em class="sig-param">var: float = 0.01</em><span class="sig-paren">)</span><a class="headerlink" href="#tsoracle.generate.ARIMA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generator for ARUMA (ARIMA with seasonality) class signals.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>phi: scalar float or list-like</strong></dt><dd><p>AR process order</p>
+</dd>
+<dt><strong>theta: scalar float or list-like</strong></dt><dd><p>MA process order</p>
+</dd>
+<dt><strong>d: scalar int</strong></dt><dd><p>ARIMA process difference order</p>
+</dd>
+<dt><strong>s: scalar int</strong></dt><dd><p>Seasonality process order</p>
+</dd>
+<dt><strong>var: scalar float, optional</strong></dt><dd><p>Nosie variance level.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 75%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>factor_table()</strong></p></td>
+<td><p>Get a factor table for the generator</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>gen(size)</strong></p></td>
+<td><p>Generates a signal</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>plot_constellation()</strong></p></td>
+<td><p>Plot the roots of the model polynomial with respect to the unit circle.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="tsoracle.generate.ARIMA.factor_table">
+<code class="sig-name descname">factor_table</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="headerlink" href="#tsoracle.generate.ARIMA.factor_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a factor table from the factors in the generator</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tsoracle.generate.ARIMA.gen">
+<code class="sig-name descname">gen</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">size:int</em>, <em class="sig-param">random_state:float=None</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#tsoracle.generate.ARIMA.gen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a realization of given size.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>size: scalar int</strong></dt><dd><p>Number of samples to generate.
+Must be strictly positive.</p>
+</dd>
+<dt><strong>random_state: scalar int, optional</strong></dt><dd><p>Seed the random number generator.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>signal: np.ndarray</dt><dd><p>Simulated ARIMA.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tsoracle.generate.ARIMA.plot_constellation">
+<code class="sig-name descname">plot_constellation</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">scale_magnitude:bool=False</em>, <em class="sig-param">scale_factor:float=1000</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">figsize=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tsoracle.generate.ARIMA.plot_constellation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots roots on the complex plane with reference to the unit circle</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>scale_magnitude: bool</strong></dt><dd><p>Option to scale the marker based on the 
+absolute magnitude of the root.</p>
+</dd>
+<dt><strong>scale_factor: float</strong></dt><dd><p>Marker scaling factor.
+Only used if <cite>scale_magnitude</cite> is set to <cite>True</cite>.</p>
+</dd>
+<dt><strong>ax: float</strong></dt><dd><p>A plotting axis. 
+If <cite>None</cite> is provided, a new plot will be generated.</p>
+</dd>
+<dt><strong>figsize: Tuple[float, float]</strong></dt><dd><p>Size of the figure to generate.
+Only used if <cite>None</cite> provided to <cite>ax</cite>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tsoracle.generate.Linear">
+<em class="property">class </em><code class="sig-prename descclassname">tsoracle.generate.</code><code class="sig-name descname">Linear</code><span class="sig-paren">(</span><em class="sig-param">intercept: float</em>, <em class="sig-param">slope: float</em>, <em class="sig-param">var: float = 0.01</em><span class="sig-paren">)</span><a class="headerlink" href="#tsoracle.generate.Linear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generator for linearly deterministic signals.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>b0: scalar float or list-like</strong></dt><dd><p>AR process order</p>
+</dd>
+<dt><strong>b1: scalar float or list-like</strong></dt><dd><p>MA process order</p>
+</dd>
+<dt><strong>var: scalar float, optional</strong></dt><dd><p>Nosie variance level.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 42%" />
+<col style="width: 58%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>gen(size)</strong></p></td>
+<td><p>Generates a signal</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="tsoracle.generate.Linear.gen">
+<code class="sig-name descname">gen</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">size:int</em>, <em class="sig-param">random_state:float=None</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#tsoracle.generate.Linear.gen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a realization of given size.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>size: scalar int</strong></dt><dd><p>Number of samples to generate.
+Must be strictly positive.</p>
+</dd>
+<dt><strong>random_state: scalar int, optional</strong></dt><dd><p>Seed the random number generator.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>signal: np.ndarray</dt><dd><p>Simulated linear.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tsoracle.generate.Noise">
+<em class="property">class </em><code class="sig-prename descclassname">tsoracle.generate.</code><code class="sig-name descname">Noise</code><span class="sig-paren">(</span><em class="sig-param">var: float = 0.01</em><span class="sig-paren">)</span><a class="headerlink" href="#tsoracle.generate.Noise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generator for noise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>var: scalar float, optional</strong></dt><dd><p>Nosie variance level.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 42%" />
+<col style="width: 58%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>gen(size)</strong></p></td>
+<td><p>Generates a signal</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="tsoracle.generate.Noise.gen">
+<code class="sig-name descname">gen</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">size:int</em>, <em class="sig-param">random_state:float=None</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#tsoracle.generate.Noise.gen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a realization of given size.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>size: scalar int</strong></dt><dd><p>Number of samples to generate.
+Must be strictly positive.</p>
+</dd>
+<dt><strong>random_state: scalar int, optional</strong></dt><dd><p>Seed the random number generator.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>signal: np.ndarray</dt><dd><p>Simulated noise.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tsoracle.generate.Sinusoidal">
+<em class="property">class </em><code class="sig-prename descclassname">tsoracle.generate.</code><code class="sig-name descname">Sinusoidal</code><span class="sig-paren">(</span><em class="sig-param">mag: Union[float, numpy.ndarray, pandas.core.series.Series, List], freq: Union[float, numpy.ndarray, pandas.core.series.Series, List], shift: Union[float, numpy.ndarray, pandas.core.series.Series, List], var: float = 0.01</em><span class="sig-paren">)</span><a class="headerlink" href="#tsoracle.generate.Sinusoidal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generator for sinusoidal deterministic signals.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>mag: scalar or list-like</strong></dt><dd><p>Signal magnitudes(ies).</p>
+</dd>
+<dt><strong>freq: scalar or list-like</strong></dt><dd><p>Signal frequency(ies).</p>
+</dd>
+<dt><strong>shift: scalar or list-like</strong></dt><dd><p>Phase shift(s).</p>
+</dd>
+<dt><strong>var: scalar float, optional</strong></dt><dd><p>Nosie variance level.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 42%" />
+<col style="width: 58%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>gen(size)</strong></p></td>
+<td><p>Generates a signal</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="tsoracle.generate.Sinusoidal.gen">
+<code class="sig-name descname">gen</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">size:int</em>, <em class="sig-param">random_state:float=None</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#tsoracle.generate.Sinusoidal.gen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a realization of given size.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>size: scalar int</strong></dt><dd><p>Number of samples to generate.
+Must be strictly positive.</p>
+</dd>
+<dt><strong>random_state: scalar int, optional</strong></dt><dd><p>Seed the random number generator.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>signal: np.ndarray</dt><dd><p>Simulated linear.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="tsoracle.generate.arima">
+<code class="sig-prename descclassname">tsoracle.generate.</code><code class="sig-name descname">arima</code><span class="sig-paren">(</span><em class="sig-param">size:int=100</em>, <em class="sig-param">phi:Union[float</em>, <em class="sig-param">numpy.ndarray]=0</em>, <em class="sig-param">theta:Union[float</em>, <em class="sig-param">numpy.ndarray]=0</em>, <em class="sig-param">d:int=0</em>, <em class="sig-param">var:float=0.01</em>, <em class="sig-param">random_state:float=None</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#tsoracle.generate.arima" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simulate a realization from an ARIMA characteristic.</p>
+<p>Acts like <cite>tswge::gen.arima.wge()</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>size: scalar int</strong></dt><dd><p>Number of samples to generate.</p>
+</dd>
+<dt><strong>phi: scalar float or list-like</strong></dt><dd><p>AR process order</p>
+</dd>
+<dt><strong>theta: scalar float or list-like</strong></dt><dd><p>MA process order</p>
+</dd>
+<dt><strong>d: scalar int</strong></dt><dd><p>ARIMA process difference order</p>
+</dd>
+<dt><strong>var: scalar float, optional</strong></dt><dd><p>Nosie variance level.</p>
+</dd>
+<dt><strong>random_state: scalar int, optional</strong></dt><dd><p>Seed the random number generator.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>signal: np.ndarray</dt><dd><p>Simulated ARIMA.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="tsoracle.generate.arima_with_seasonality">
-<code class="descclassname">tsoracle.generate.</code><code class="descname">arima_with_seasonality</code><span class="sig-paren">(</span><em>size: int = 100</em>, <em>phi: typing.Union[float</em>, <em>numpy.ndarray] = 0</em>, <em>theta: typing.Union[float</em>, <em>numpy.ndarray] = 0</em>, <em>d: int = 0</em>, <em>s: int = 0</em>, <em>var: float = 0.01</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#tsoracle.generate.arima_with_seasonality" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">tsoracle.generate.</code><code class="sig-name descname">arima_with_seasonality</code><span class="sig-paren">(</span><em class="sig-param">size:int=100</em>, <em class="sig-param">phi:Union[float</em>, <em class="sig-param">numpy.ndarray]=None</em>, <em class="sig-param">theta:Union[float</em>, <em class="sig-param">numpy.ndarray]=None</em>, <em class="sig-param">d:int=0</em>, <em class="sig-param">s:int=0</em>, <em class="sig-param">var:float=0.01</em>, <em class="sig-param">random_state:float=None</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#tsoracle.generate.arima_with_seasonality" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simulate a realization from an ARIMA with seasonality characteristic.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>size: scalar int</strong></p>
-<blockquote>
-<div><p>Number of samples to generate.</p>
-</div></blockquote>
-<p><strong>phi: scalar float or list-like</strong></p>
-<blockquote>
-<div><p>AR process order</p>
-</div></blockquote>
-<p><strong>theta: scalar float or list-like</strong></p>
-<blockquote>
-<div><p>MA process order</p>
-</div></blockquote>
-<p><strong>d: scalar int</strong></p>
-<blockquote>
-<div><p>ARIMA process difference order</p>
-</div></blockquote>
-<p><strong>s: scalar int</strong></p>
-<blockquote>
-<div><p>Seasonality process order</p>
-</div></blockquote>
-<p><strong>var: scalar float, optional</strong></p>
-<blockquote>
-<div><p>Nosie variance level.</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">signal: np.ndarray</p>
-<blockquote class="last">
-<div><p>Simulated ARIMA with seasonality.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>size: scalar int</strong></dt><dd><p>Number of samples to generate.</p>
+</dd>
+<dt><strong>phi: scalar float or list-like</strong></dt><dd><p>AR process order</p>
+</dd>
+<dt><strong>theta: scalar float or list-like</strong></dt><dd><p>MA process order</p>
+</dd>
+<dt><strong>d: scalar int</strong></dt><dd><p>ARIMA process difference order</p>
+</dd>
+<dt><strong>s: scalar int</strong></dt><dd><p>Seasonality process order</p>
+</dd>
+<dt><strong>var: scalar float, optional</strong></dt><dd><p>Nosie variance level.</p>
+</dd>
+<dt><strong>random_state: scalar int, optional</strong></dt><dd><p>Seed the random number generator.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>signal: np.ndarray</dt><dd><p>Simulated ARIMA with seasonality.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="tsoracle.generate.arma">
-<code class="descclassname">tsoracle.generate.</code><code class="descname">arma</code><span class="sig-paren">(</span><em>size: int = 100</em>, <em>phi: typing.Union[float</em>, <em>numpy.ndarray] = 0</em>, <em>theta: typing.Union[float</em>, <em>numpy.ndarray] = 0</em>, <em>var: float = 0.01</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#tsoracle.generate.arma" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">tsoracle.generate.</code><code class="sig-name descname">arma</code><span class="sig-paren">(</span><em class="sig-param">size:int=100</em>, <em class="sig-param">phi:Union[float</em>, <em class="sig-param">numpy.ndarray]=None</em>, <em class="sig-param">theta:Union[float</em>, <em class="sig-param">numpy.ndarray]=None</em>, <em class="sig-param">var:float=0.01</em>, <em class="sig-param">random_state:float=None</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#tsoracle.generate.arma" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simulate a realization from an ARMA characteristic.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>size: scalar int</strong></p>
-<blockquote>
-<div><blockquote>
-<div><p>Number of samples to generate.</p>
-</div></blockquote>
-<dl class="docutils">
-<dt>phi: scalar float or list-like</dt>
-<dd><p class="first last">AR process order</p>
+<p>Acts like <cite>tswge::gen.arma.wge()</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>size: scalar int</strong></dt><dd><p>Number of samples to generate.</p>
 </dd>
-<dt>theta: scalar float or list-like</dt>
-<dd><p class="first last">MA process order</p>
+<dt><strong>phi: scalar float or list-like</strong></dt><dd><p>AR process order</p>
 </dd>
-<dt>var: scalar float, optional</dt>
-<dd><p class="first last">Nosie variance level.</p>
+<dt><strong>theta: scalar float or list-like</strong></dt><dd><p>MA process order</p>
+</dd>
+<dt><strong>var: scalar float, optional</strong></dt><dd><p>Nosie variance level.</p>
+</dd>
+<dt><strong>random_state: scalar int, optional</strong></dt><dd><p>Seed the random number generator.</p>
 </dd>
 </dl>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">signal: np.ndarray</p>
-<blockquote class="last">
-<div><p>Simulated ARMA.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>signal: np.ndarray</dt><dd><p>Simulated ARMA.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="tsoracle.generate.linear">
-<code class="descclassname">tsoracle.generate.</code><code class="descname">linear</code><span class="sig-paren">(</span><em>intercept: float</em>, <em>slope: float</em>, <em>size: int</em>, <em>var: float = 0.01</em><span class="sig-paren">)</span><a class="headerlink" href="#tsoracle.generate.linear" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">tsoracle.generate.</code><code class="sig-name descname">linear</code><span class="sig-paren">(</span><em class="sig-param">intercept:float</em>, <em class="sig-param">slope:float</em>, <em class="sig-param">size:int</em>, <em class="sig-param">var:float=0.01</em>, <em class="sig-param">random_state:float=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tsoracle.generate.linear" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate linear signal plus noise.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>intercept: scalar float</strong></p>
-<blockquote>
-<div><p>Intercept of linear signal.</p>
-</div></blockquote>
-<p><strong>slope: scalar float</strong></p>
-<blockquote>
-<div><p>Slope of linear signal.</p>
-</div></blockquote>
-<p><strong>size: scalar int</strong></p>
-<blockquote>
-<div><p>Number of samples to generate.</p>
-</div></blockquote>
-<p><strong>var: scalar float, optional</strong></p>
-<blockquote>
-<div><p>Nosie variance level.</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">signal: np.ndarray</p>
-<blockquote class="last">
-<div><p>Sequential linear signal.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>intercept: scalar float</strong></dt><dd><p>Intercept of linear signal.</p>
+</dd>
+<dt><strong>slope: scalar float</strong></dt><dd><p>Slope of linear signal.</p>
+</dd>
+<dt><strong>size: scalar int</strong></dt><dd><p>Number of samples to generate.</p>
+</dd>
+<dt><strong>var: scalar float, optional</strong></dt><dd><p>Nosie variance level.</p>
+</dd>
+<dt><strong>random_state: scalar int, optional</strong></dt><dd><p>Seed the random number generator</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>signal: np.ndarray</dt><dd><p>Sequential linear signal.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="tsoracle.generate.noise">
-<code class="descclassname">tsoracle.generate.</code><code class="descname">noise</code><span class="sig-paren">(</span><em>var: float</em>, <em>size: int</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#tsoracle.generate.noise" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">tsoracle.generate.</code><code class="sig-name descname">noise</code><span class="sig-paren">(</span><em class="sig-param">var:Union[float, int], size:int, random_state:float=None</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#tsoracle.generate.noise" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate sequential noise from a random normal .</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>var: scalar float</strong></p>
-<blockquote>
-<div><p>Nosie variance level.</p>
-</div></blockquote>
-<p><strong>size: scalar int</strong></p>
-<blockquote>
-<div><p>Number of samples to generate.</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">noise: np.ndarray</p>
-<blockquote class="last">
-<div><p>Sequential noise.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>var: scalar float</strong></dt><dd><p>Nosie variance level.</p>
+</dd>
+<dt><strong>size: scalar int</strong></dt><dd><p>Number of samples to generate, strictly positive.</p>
+</dd>
+<dt><strong>random_state: scalar int, optional</strong></dt><dd><p>Seed the random number generator</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>noise: np.ndarray</dt><dd><p>Sequential noise.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="tsoracle.generate.sinusoidal">
-<code class="descclassname">tsoracle.generate.</code><code class="descname">sinusoidal</code><span class="sig-paren">(</span><em>mag: typing.Union[float, numpy.ndarray, pandas.core.series.Series, typing.List], freq: typing.Union[float, numpy.ndarray, pandas.core.series.Series, typing.List], shift: typing.Union[float, numpy.ndarray, pandas.core.series.Series, typing.List], size: int, var: float = 0.01</em><span class="sig-paren">)</span><a class="headerlink" href="#tsoracle.generate.sinusoidal" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">tsoracle.generate.</code><code class="sig-name descname">sinusoidal</code><span class="sig-paren">(</span><em class="sig-param">mag:Union[float, numpy.ndarray, pandas.core.series.Series, List], freq:Union[float, numpy.ndarray, pandas.core.series.Series, List], shift:Union[float, numpy.ndarray, pandas.core.series.Series, List], size:int, var:float=0.01, random_state:float=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tsoracle.generate.sinusoidal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate sinusoidal signal plus noise.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>mag: scalar or list-like</strong></p>
-<blockquote>
-<div><p>Signal magnitudes(ies).</p>
-</div></blockquote>
-<p><strong>freq: scalar or list-like</strong></p>
-<blockquote>
-<div><p>Signal frequency(ies).</p>
-</div></blockquote>
-<p><strong>shift: scalar or list-like</strong></p>
-<blockquote>
-<div><p>Phase shift(s).</p>
-</div></blockquote>
-<p><strong>size: scalar int</strong></p>
-<blockquote>
-<div><p>Number of samples to generate.</p>
-</div></blockquote>
-<p><strong>var: scalar float, optional</strong></p>
-<blockquote>
-<div><p>Nosie variance level.</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">signal: np.ndarray</p>
-<blockquote class="last">
-<div><p>Sequential sinusoidal signal.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>mag: scalar or list-like</strong></dt><dd><p>Signal magnitudes(ies).</p>
+</dd>
+<dt><strong>freq: scalar or list-like</strong></dt><dd><p>Signal frequency(ies).</p>
+</dd>
+<dt><strong>shift: scalar or list-like</strong></dt><dd><p>Phase shift(s).</p>
+</dd>
+<dt><strong>size: scalar int</strong></dt><dd><p>Number of samples to generate.</p>
+</dd>
+<dt><strong>var: scalar float, optional</strong></dt><dd><p>Nosie variance level.</p>
+</dd>
+<dt><strong>random_state: scalar int, optional</strong></dt><dd><p>Seed the random number generator.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>signal: np.ndarray</dt><dd><p>Sequential sinusoidal signal.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
 <div class="section" id="module-tsoracle.plotting">
 <span id="plotting"></span><h1>Plotting<a class="headerlink" href="#module-tsoracle.plotting" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
+<dt id="tsoracle.plotting.constellation">
+<code class="sig-prename descclassname">tsoracle.plotting.</code><code class="sig-name descname">constellation</code><span class="sig-paren">(</span><em class="sig-param">zeros:numpy.ndarray</em>, <em class="sig-param">poles:numpy.ndarray=None</em>, <em class="sig-param">scale_magnitude=False</em>, <em class="sig-param">scale_factor:float=1000</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">figsize=None</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#tsoracle.plotting.constellation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots roots on the complex plane with reference to the unit circle</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>zeros: list-like</strong></dt><dd><p>A set of roots.</p>
+</dd>
+<dt><strong>poles: list-like</strong></dt><dd><p>A set of roots.</p>
+</dd>
+<dt><strong>scale_magnitude: bool</strong></dt><dd><p>Option to scale the marker based on the 
+absolute magnitude of the root.</p>
+</dd>
+<dt><strong>scale_factor: float</strong></dt><dd><p>Marker scaling factor.
+Only used if <cite>scale_magnitude</cite> is set to <cite>True</cite>.</p>
+</dd>
+<dt><strong>ax: float</strong></dt><dd><p>The forecast confidence level as the multiplier
+(default is 95% confidence).</p>
+</dd>
+<dt><strong>figsize: Tuple[float, float]</strong></dt><dd><p>Size of the figure to generate.
+Only used if <cite>None</cite> provided to <cite>ax</cite>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
 <dt id="tsoracle.plotting.realization">
-<code class="descclassname">tsoracle.plotting.</code><code class="descname">realization</code><span class="sig-paren">(</span><em>x: typing.Union[numpy.ndarray, pandas.core.series.Series, typing.List], figsize: typing.Tuple[float, float] = None</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#tsoracle.plotting.realization" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">tsoracle.plotting.</code><code class="sig-name descname">realization</code><span class="sig-paren">(</span><em class="sig-param">x:Union[numpy.ndarray, pandas.core.series.Series, List], figsize:Tuple[float, float]=None</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#tsoracle.plotting.realization" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot a given realization</p>
 <p>Acts like <cite>tswge::plotts.wge()</cite>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x: list-like</strong></p>
-<blockquote>
-<div><p>A time series realization.</p>
-</div></blockquote>
-<p><strong>figsize: Tuple[float, float], optional</strong></p>
-<blockquote class="last">
-<div><p>Size of the plotting grid.
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x: list-like</strong></dt><dd><p>A time series realization.</p>
+</dd>
+<dt><strong>figsize: Tuple[float, float], optional</strong></dt><dd><p>Size of the plotting grid.
 If <cite>None</cite> is provided, <cite>(10, 10)</cite> will be used.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="tsoracle.plotting.sample">
-<code class="descclassname">tsoracle.plotting.</code><code class="descname">sample</code><span class="sig-paren">(</span><em>x: typing.Union[numpy.ndarray, pandas.core.series.Series, typing.List], figsize: typing.Tuple[float, float] = None, window: typing.Callable = None</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#tsoracle.plotting.sample" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">tsoracle.plotting.</code><code class="sig-name descname">sample</code><span class="sig-paren">(</span><em class="sig-param">x:Union[numpy.ndarray, pandas.core.series.Series, List], figsize:Tuple[float, float]=None, window:Callable=None</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#tsoracle.plotting.sample" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show the typical sample plots.</p>
 <p>The following plots are generated in a grid</p>
 <ul class="simple">
-<li>Realization</li>
-<li>Sample autocorrelations</li>
-<li>Periodogram</li>
-<li>Windowed Spectral Density</li>
+<li><p>Realization</p></li>
+<li><p>Sample autocorrelations</p></li>
+<li><p>Periodogram</p></li>
+<li><p>Windowed Spectral Density</p></li>
 </ul>
 <p>Acts like <cite>tswge::plotts.sample.wge()</cite>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x: list-like</strong></p>
-<blockquote>
-<div><p>A time series realization.</p>
-</div></blockquote>
-<p><strong>figsize: Tuple[float, float], optional</strong></p>
-<blockquote>
-<div><p>Size of the plotting grid.
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x: list-like</strong></dt><dd><p>A time series realization.</p>
+</dd>
+<dt><strong>figsize: Tuple[float, float], optional</strong></dt><dd><p>Size of the plotting grid.
 If <cite>None</cite> is provided, <cite>(10, 10)</cite> will be used.</p>
-</div></blockquote>
-<p><strong>window: Callable, optional</strong></p>
-<blockquote class="last">
-<div><p>A callable windowing function.
-Must work like window functions from <cite>scipy.signal</cite>.
-If <cite>None</cite> is provided, <cite>scipy.signal.parzen()</cite> will be used.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt><strong>window: Callable, optional</strong></dt><dd><p>A callable windowing function.
+Must work like window functions from <cite>scipy.signal.windows</cite>.
+If <cite>None</cite> is provided, <cite>scipy.signal.windows.parzen()</cite> will be used.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
-<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
-<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
 </div>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -357,13 +742,13 @@ If <cite>None</cite> is provided, <cite>scipy.signal.parzen()</cite> will be use
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -374,8 +759,8 @@ If <cite>None</cite> is provided, <cite>scipy.signal.parzen()</cite> will be use
       &copy;2020, Stuart Miller.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/index.rst.txt"
