@@ -142,8 +142,8 @@ def sinusoidal(mag: Union[float, ndarray, Series, List],
     return signal + sig_noise
 
 def arima_with_seasonality(size: int = 100,
-                           phi: Union[float, ndarray] = 0,
-                           theta: Union[float, ndarray] = 0,
+                           phi: Union[float, ndarray] = None,
+                           theta: Union[float, ndarray] = None,
                            d: int = 0,
                            s: int = 0,
                            var: float = 0.01, 
@@ -177,7 +177,36 @@ def arima_with_seasonality(size: int = 100,
     if size < 1:
         raise ValueError('The value for size must be strictly positive')
 
-    raise NotImplementedError
+    if factor.roots_in_unit_circle(phi, theta):
+        raise ValueError('The input polynomials have roots in the unit circle.')
+
+    factors = list()
+
+    if phi is not None:
+        factors.append(phi)
+    if s > 1:
+        factors.append(
+            np.append(np.zeros(s-1), 1)
+        )
+    if d > 0:
+        factors += [[1.0] for x in range(d)]
+    
+    if len(factors) > 0:
+        ar_polynomial = factor.multiply(factors)
+        ar_polynomial = np.insert(np.negative(ar_polynomial),0,1)
+    else:
+        ar_polynomial = [1.0]
+
+    if theta is not None:
+        ma_polynomial = np.insert(np.negative(theta), 0, 1)
+    else:
+        ma_polynomial = [1.0]
+        
+    sig_noise = noise(var, size, random_state = random_state)
+
+    signal = lfilter(ma_polynomial, ar_polynomial, sig_noise)
+
+    return signal
 
 def arima(size: int = 100,
           phi: Union[float, ndarray] = 0,
@@ -209,7 +238,13 @@ def arima(size: int = 100,
         Simulated ARIMA.
     """
 
-    raise NotImplementedError
+    return arima_with_seasonality(size = size,
+                                  phi = phi,
+                                  theta = theta,
+                                  d = d,
+                                  s = 0,
+                                  var = var,
+                                  random_state = random_state)
 
 def arma(size: int = 100,
          phi: Union[float, ndarray] = None,
@@ -238,28 +273,14 @@ def arma(size: int = 100,
         Simulated ARMA.
     """
 
-    # check for input errors
-    if size < 1:
-        raise ValueError('The value for size must be strictly positive')
+    return arima_with_seasonality(size = size,
+                                  phi = phi,
+                                  theta = theta,
+                                  d = 0,
+                                  s = 0,
+                                  var = var,
+                                  random_state = random_state)
 
-    if factor.roots_in_unit_circle(phi, theta):
-        raise ValueError('The input polynomials have roots in the unit circle. \
-                          This is not an ARMA process.')
-
-    if phi is None:
-        phi_poly = np.ones(1)
-    else:
-        phi_poly = np.insert(np.negative(phi),0,1)
-    if theta is None:
-        theta_poly = np.ones(1)
-    else:
-        theta_poly = np.insert(theta, 0, 1)
-
-    sig_noise = noise(var,size,random_state = random_state)
-
-    signal = lfilter(theta_poly, phi_poly, sig_noise)
-
-    return signal
 
 # Object-O API
 
