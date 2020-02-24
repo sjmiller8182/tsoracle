@@ -217,6 +217,8 @@ def arima(size: int = 100,
     # inherit from arima_with_seasonality
     """Simulate a realization from an ARIMA characteristic.
 
+    Acts like `tswge::gen.arima.wge()`
+
     Parameters
     ----------
     size: scalar int
@@ -253,6 +255,8 @@ def arma(size: int = 100,
          random_state: float = None) -> ndarray:
     # inherit from arima_with_seasonality
     """Simulate a realization from an ARMA characteristic.
+
+    Acts like `tswge::gen.arma.wge()`
 
     Parameters
     ----------
@@ -347,10 +351,13 @@ class ARIMA(Generator):
 
     Methods
     -------
+    factor_table()
+        Get a factor table for the generator
     gen(size)
         Generates a signal
-    factor_table(table_type)
-        Get a factor table for the generator
+    plot_constellation()
+        Plot the roots of the model polynomial
+        with respect to the unit circle.
     """
 
     def __init__(self, 
@@ -437,8 +444,8 @@ class ARIMA(Generator):
             Marker scaling factor.
             Only used if `scale_magnitude` is set to `True`.
         ax: float
-            The forecast confidence level as the multiplier
-            (default is 95% confidence).
+            A plotting axis. 
+            If `None` is provided, a new plot will be generated.
         figsize: Tuple[float, float]
             Size of the figure to generate.
             Only used if `None` provided to `ax`.
@@ -453,13 +460,6 @@ class ARIMA(Generator):
 
     def factor_table(self):
         """Create a factor table from the factors in the generator
-
-        Parameters
-        ----------
-        ar_polynomial: list-like
-            List of phi coefficients.
-        ma_polynomial: list-like
-            List of theta coefficients.
         """
         factor.table(self.ar_polynomial, self.theta)
 

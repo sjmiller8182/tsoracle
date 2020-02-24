@@ -16,6 +16,12 @@ RECIPROCAL_2PI = 0.15915494309189535
 """Constant for system frequency calculation: 1 / (2 * pi)
 """
 
+__all__ = [
+    'table',
+    'multiply',
+    'to_glp'
+]
+
 def get_system_freq(first_order_coef: float, sec_order_coef: float) -> float:
     """Calculates the system frequency for a 2nd degree polynomial
     with complex roots.
@@ -157,6 +163,8 @@ def table(ar_polynomial: ndarray = None,
     
     table( [1.2, -0.4] )
 
+    Acts like `tswge::factor.wge`.
+
     Parameters
     ----------
     ar_polynomial: list-like
@@ -164,7 +172,7 @@ def table(ar_polynomial: ndarray = None,
     ma_polynomial: list-like
         List of theta coefficients.
     
-    Acts like `tswge::factor.wge`
+    
     
     """
     # get the roots of the autoregressive polynomial
@@ -292,6 +300,8 @@ def to_glp(phi:Union[List, ndarray] = None,
     phi = [ 0.9 ]
     theta = [ -0.3 , -0.4 ]
 
+    Acts like `tswge::psi.weights.wge`.
+
     Parameters
     ----------
     phi: list-like
@@ -300,14 +310,14 @@ def to_glp(phi:Union[List, ndarray] = None,
         A set of MA coefficients i.e. the thetas.
     lags:
         The number of coefficients to calculate.
-    
+
     Returns
     -------
     glp_coef: ndarray
         The coefficients representing the input model.
         The first element is always 1.
 
-    Acts like `tswge::psi.weights.wge`
+    
     """
     if theta is None:
         theta_poly = [1.0]
@@ -329,21 +339,23 @@ def to_glp(phi:Union[List, ndarray] = None,
 def multiply(factors: List[List[float]]) -> ndarray:
     """Multiply together time series factors
     
+    
+    Factors should be entered as phis and thetas
+    
+    An example AR polynomial is
+    
+    (1 + 0.8 B)(1 - 1.2 B + 0.4 B^2) X_t = 0
+
+    This would be entered as 
+    
+    multiply( [ [-0.8] , [1.2, -0.4] ] )
+
+    Acts like `tswge::mult.wge`.
+
     Parameters
     ----------
     factors: List of Lists
         List of factors to multiply together.
-        Factors should be entered as phis and thetas
-        
-        An example AR polynomial is
-        
-        (1 + 0.8 B)(1 - 1.2 B + 0.4 B^2) X_t = 0
-    
-        This would be entered as 
-        
-        multiply( [ [-0.8] , [1.2, -0.4] ] )
-    
-    Acts like `tswge::mult.wge`
     """
     
     if not isinstance(factors, ndarray):
