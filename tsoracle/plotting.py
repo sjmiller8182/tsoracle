@@ -228,3 +228,55 @@ def constellation(zeros: np.ndarray,
                        color = 'red', label = 'Unstable Poles')
         # only create the legend when both sets of roots are provided
         ax.legend()
+
+def cross_lag_plot(series,
+                   lagged_series,
+                   max_lag,
+                   names = None,
+                   ncols = 2,
+                   display_corr = True,
+                   figsize = None):
+    """Create scatter plots of `series` vs lags of `lagged_series`.
+    `series` and `lagged_series` must be the same size.
+    
+    Parameters
+    ----------
+    series: list-like
+        A time series.
+    lagged_series: list-like
+        A time series to lag against `series`.
+    max_lag: int
+        The number of lag plots to produce.
+    names: list-like
+        Names of the two series that are plotted:
+        `(series, lagged_series)`.
+    ncols: int
+        number of columns to use in plot.
+    display_corr: bool
+        Whether to display the correlation coefficient on the lag plots.
+    figsize: Tuple
+        Size of the figure.
+    """
+    # figure setup
+    fig = plt.figure(figsize = figsize)
+    fig.tight_layout()
+    if names is not None:
+        fig.suptitle(f'{names[0]} vs Lags of {names[1]}')
+    # create lag plots
+    for i in range(max_lag):
+        ax = plt.subplot2grid((max_lag // ncols, ncols),
+                              [i // ncols, i % ncols],
+                              fig = fig)
+        ax.scatter(series[:-i-1], lagged_series[i + 1:])
+        ax.set_title(f'Lag {i+1}')
+        # display the correlation coefficients between the series and
+        # the lagged series
+        if display_corr:
+            correlation = np.corrcoef(series[:-(i + 1)],
+                                      lagged_series[i + 1:])
+            y = ax.get_ylim()[1] * 0.8
+            if correlation[0][1] > 0:
+                x = ax.get_xlim()[0] * 0.8
+            else:
+                x = ax.get_xlim()[1] * 0.3
+            ax.text(x, y, 'Corr {:.3f}'.format(correlation[0][1]))
